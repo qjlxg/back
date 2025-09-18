@@ -52,15 +52,15 @@ class MarketMonitor:
         logger.info("当前时间: %s, 期望最新数据日期: %s", now.strftime('%Y-%m-%d %H:%M:%S'), expected_date)
         return expected_date
 
-    def _parse_report(self):
+    def _parse_report(self, report_path='analysis_report.md'):
         """从 analysis_report.md 提取推荐基金代码"""
-        logger.info("正在解析 %s 获取推荐基金代码...", self.report_file)
-        if not os.path.exists(self.report_file):
-            logger.error("报告文件 %s 不存在", self.report_file)
-            raise FileNotFoundError(f"{self.report_file} 不存在")
+        logger.info("正在解析 %s 获取推荐基金代码...", report_path)
+        if not os.path.exists(report_path):
+            logger.error("报告文件 %s 不存在", report_path)
+            raise FileNotFoundError(f"{report_path} 不存在")
         
         try:
-            with open(self.report_file, 'r', encoding='utf-8') as f:
+            with open(report_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
             pattern = re.compile(r'(?:^\| +(\d{6})|### 基金 (\d{6}))', re.M)
@@ -443,6 +443,7 @@ class MarketMonitor:
             latest_rsi = latest_data['rsi']
             latest_ma_ratio = latest_data['ma_ratio']
             latest_macd_diff = latest_data['macd'] - latest_data['signal']
+            latest_bb_upper = latest_data['bb_upper']
             latest_bb_lower = latest_data['bb_lower']
 
             action_signal = "持有/观察"
