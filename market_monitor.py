@@ -72,12 +72,12 @@ class MarketMonitor:
                 extracted_codes.add(code)
             
             sorted_codes = sorted(list(extracted_codes))
-            self.fund_codes = sorted_codes[:10]
+            self.fund_codes = sorted_codes[:1000]
             
             if not self.fund_codes:
                 logger.warning("未提取到任何有效基金代码，请检查 analysis_report.md")
             else:
-                logger.info("提取到 %d 个基金（测试限制前10个）: %s", len(self.fund_codes), self.fund_codes)
+                logger.info("提取到 %d 个基金（测试限制前1000个）: %s", len(self.fund_codes), self.fund_codes)
             
         except Exception as e:
             logger.error("解析报告文件失败: %s", e)
@@ -90,6 +90,7 @@ class MarketMonitor:
             try:
                 df = pd.read_csv(file_path, parse_dates=['date'])
                 if not df.empty and 'date' in df.columns and 'net_value' in df.columns:
+                    df = df.sort_values(by='date', ascending=True).reset_index(drop=True)
                     logger.info("本地已存在基金 %s 数据，共 %d 行，最新日期为: %s", fund_code, len(df), df['date'].max().date())
                     return df
             except Exception as e:
@@ -109,17 +110,18 @@ class MarketMonitor:
         retry=tenacity.retry_if_exception_type((requests.exceptions.RequestException, ValueError)),
         before_sleep=lambda retry_state: logger.info(f"重试基金 {retry_state.args[0]}，第 {retry_state.attempt_number} 次")
     )
-    def _fetch_fund_data(self, fund_code):
-        """从网络获取基金数据，并支持增量更新"""
-        local_df = self._read_local_data(fund_code)
-        latest_local_date = local_df['date'].max().date() if not local_df.empty else None
-        
+    def _fetch_fund_data(self, fund_code, latest_local_date=None):
+        """
+        从网络获取基金数据，实现真正的增量更新。
+        如果 latest_local_date 不为空，则只获取其之后的数据。
+        """
         all_new_data = []
         page_index = 1
+        has_new_data = False
         
         while True:
             url = f"http://fundf10.eastmoney.com/F10DataApi.aspx?type=lsjz&code={fund_code}&page={page_index}&per=20"
-            logger.info("访问URL: %s", url)
+            logger.info("正在获取基金 %s 的第 %d 页数据...", fund_code, page_index)
             
             try:
                 response = requests.get(url, headers=self.headers, timeout=30)
@@ -141,31 +143,40 @@ class MarketMonitor:
                     logger.warning("基金 %s 在第 %d 页未找到数据表格，爬取结束", fund_code, page_index)
                     break
                 
-                df = tables[0]
-                df.columns = ['date', 'net_value', 'cumulative_net_value', 'daily_growth_rate', 'purchase_status', 'redemption_status', 'dividend']
-                df = df[['date', 'net_value']].copy()
-                df['date'] = pd.to_datetime(df['date'], errors='coerce')
-                df['net_value'] = pd.to_numeric(df['net_value'], errors='coerce')
-                df = df.dropna(subset=['date', 'net_value'])
+                df_page = tables[0]
+                df_page.columns = ['date', 'net_value', 'cumulative_net_value', 'daily_growth_rate', 'purchase_status', 'redemption_status', 'dividend']
+                df_page = df_page[['date', 'net_value']].copy()
+                df_page['date'] = pd.to_datetime(df_page['date'], errors='coerce')
+                df_page['net_value'] = pd.to_numeric(df_page['net_value'], errors='coerce')
+                df_page = df_page.dropna(subset=['date', 'net_value'])
                 
+                # 如果是增量更新模式，检查是否已获取到本地最新数据之前的数据
                 if latest_local_date:
-                    # 只获取比本地最新日期更新的数据
-                    new_df = df[df['date'].dt.date > latest_local_date]
-                    if not new_df.empty:
-                        all_new_data.append(new_df)
-                        logger.info("第 %d 页: 发现 %d 行新数据", page_index, len(new_df))
-                    
-                    if new_df.empty and page_index == 1:
-                        logger.info("基金 %s 无新数据，爬取结束", fund_code)
-                        break
+                    new_df_page = df_page[df_page['date'].dt.date > latest_local_date]
+                    if new_df_page.empty:
+                        # 如果当前页没有新数据，且之前已经发现过新数据，则停止爬取
+                        if has_new_data:
+                            logger.info("基金 %s 已获取所有新数据，爬取结束。", fund_code)
+                            break
+                        # 如果当前页没有新数据，且是第一页，则说明没有新数据
+                        elif page_index == 1:
+                            logger.info("基金 %s 无新数据，爬取结束。", fund_code)
+                            break
+                    else:
+                        has_new_data = True
+                        all_new_data.append(new_df_page)
+                        logger.info("第 %d 页: 发现 %d 行新数据", page_index, len(new_df_page))
                 else:
-                    # 如果本地没有数据，则获取所有历史数据
-                    all_new_data.append(df)
-                    if len(df) < 20:
-                        break
+                    # 如果是首次下载，则获取所有数据
+                    all_new_data.append(df_page)
 
-                logger.info("基金 %s 总页数: %d, 当前页: %d, 当前页行数: %d", fund_code, total_pages, page_index, len(df))
+                logger.info("基金 %s 总页数: %d, 当前页: %d, 当前页行数: %d", fund_code, total_pages, page_index, len(df_page))
                 
+                # 如果是增量更新模式，且当前页数据比最新数据日期早，则结束循环
+                if latest_local_date and (df_page['date'].dt.date <= latest_local_date).any():
+                    logger.info("基金 %s 已追溯到本地数据，增量爬取结束。", fund_code)
+                    break
+
                 if page_index >= total_pages:
                     logger.info("基金 %s 已获取所有历史数据，共 %d 页，爬取结束", fund_code, total_pages)
                     break
@@ -180,21 +191,12 @@ class MarketMonitor:
                 logger.error("基金 %s API数据解析失败: %s", fund_code, str(e))
                 raise
 
-        # 合并新数据和旧数据
+        # 合并新数据并返回
         if all_new_data:
             new_combined_df = pd.concat(all_new_data, ignore_index=True)
-            df_final = pd.concat([local_df, new_combined_df]).drop_duplicates(subset=['date'], keep='last').sort_values(by='date', ascending=True)
-            self._save_to_local_file(fund_code, df_final)
-            df_final = df_final.tail(100)
-            logger.info("成功合并并保存基金 %s 的数据，总行数: %d, 最新日期: %s, 最新净值: %.4f", 
-                                 fund_code, len(df_final), df_final['date'].iloc[-1].strftime('%Y-%m-%d'), df_final['net_value'].iloc[-1])
-            return df_final[['date', 'net_value']]
+            return new_combined_df[['date', 'net_value']]
         else:
-            if not local_df.empty:
-                logger.info("基金 %s 无新数据，使用本地历史数据", fund_code)
-                return local_df.tail(100)[['date', 'net_value']]
-            else:
-                raise ValueError("未获取到任何有效数据，且本地无缓存")
+            return pd.DataFrame()
 
     def _calculate_indicators(self, df):
         """计算技术指标并生成结果字典"""
@@ -351,19 +353,19 @@ class MarketMonitor:
             
             fund_codes_to_fetch.append(fund_code)
 
-        # 步骤3: 多线程网络下载
+        # 步骤3: 多线程网络下载和处理
         if fund_codes_to_fetch:
             logger.info("开始使用多线程获取 %d 个基金的新数据...", len(fund_codes_to_fetch))
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                future_to_code = {executor.submit(self._fetch_fund_data, code): code for code in fund_codes_to_fetch}
+                future_to_code = {executor.submit(self._process_single_fund, code): code for code in fund_codes_to_fetch}
                 for future in concurrent.futures.as_completed(future_to_code):
                     fund_code = future_to_code[future]
                     try:
-                        df = future.result()
-                        result = self._get_latest_signals(fund_code, df)
-                        self.fund_data[fund_code] = result
+                        result = future.result()
+                        if result:
+                            self.fund_data[fund_code] = result
                     except Exception as e:
-                        logger.error("获取和处理基金 %s 数据时出错: %s", fund_code, str(e))
+                        logger.error("处理基金 %s 数据时出错: %s", fund_code, str(e))
                         self.fund_data[fund_code] = {
                             'fund_code': fund_code, 'latest_net_value': "数据获取失败", 'rsi': np.nan,
                             'ma_ratio': np.nan, 'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 'advice': "观察", 'action_signal': 'N/A'
@@ -375,7 +377,27 @@ class MarketMonitor:
             logger.info("所有基金数据处理完成。")
         else:
             logger.error("所有基金数据均获取失败。")
-            
+
+    def _process_single_fund(self, fund_code):
+        """处理单个基金数据：读取本地，下载增量，合并，保存，并计算信号"""
+        local_df = self._read_local_data(fund_code)
+        latest_local_date = local_df['date'].max().date() if not local_df.empty else None
+
+        new_df = self._fetch_fund_data(fund_code, latest_local_date)
+        
+        if not new_df.empty:
+            df_final = pd.concat([local_df, new_df]).drop_duplicates(subset=['date'], keep='last').sort_values(by='date', ascending=True)
+            self._save_to_local_file(fund_code, df_final)
+            return self._get_latest_signals(fund_code, df_final.tail(100))
+        elif not local_df.empty:
+            # 如果没有新数据，且本地有数据，则使用本地数据计算信号
+            logger.info("基金 %s 无新数据，使用本地历史数据进行分析", fund_code)
+            return self._get_latest_signals(fund_code, local_df.tail(100))
+        else:
+            # 如果既没有新数据，本地又没有数据，则返回失败
+            logger.error("基金 %s 未获取到任何有效数据，且本地无缓存", fund_code)
+            return None
+    
     def _backtest_strategy(self, fund_code, df):
         """历史回测策略性能"""
         if df is None or df.empty or len(df) < 100:
