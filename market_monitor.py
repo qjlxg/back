@@ -449,20 +449,20 @@ class MarketMonitor:
             if not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.95:
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 70) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma50_ratio > 1.2) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff < 0):
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
                  (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1.2):
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
                 action_signal = "弱卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi < 35) and \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.9) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.9) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
                 action_signal = "强买入"
             elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1):
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1):
                 action_signal = "弱买入"
             
             # 模拟交易
