@@ -407,6 +407,8 @@ class MarketMonitor:
         # 计算所有指标
         df = self._calculate_indicators(df)
         df = df.dropna()
+        # 关键修复：重置索引以确保后续循环的.iloc正常工作
+        df.reset_index(drop=True, inplace=True)
 
         # 增加一个检查，确保dropna后仍有足够的数据
         if df.empty or len(df) < 2:
@@ -434,7 +436,7 @@ class MarketMonitor:
             if position == 1 and (latest_net_value / buy_price) < 0.90:  # 止损10%
                 sell_price = latest_net_value
                 ret = (sell_price - buy_price) / buy_price
-                trades.append({'buy_date': df.loc[i-1, 'date'], 'sell_date': df.loc[i, 'date'], 'return': ret, 'type': 'stop_loss'})
+                trades.append({'buy_date': df.iloc[i-1]['date'], 'sell_date': df.iloc[i]['date'], 'return': ret, 'type': 'stop_loss'})
                 position = 0
                 buy_price = 0
                 continue # 继续下一天
@@ -470,11 +472,12 @@ class MarketMonitor:
             if action_signal in ["强买入", "弱买入"] and position == 0:
                 position = 1
                 buy_price = latest_net_value
-                trades.append({'buy_date': df.loc[i, 'date'], 'buy_price': buy_price})
+                # 修复: 使用 .iloc 进行基于位置的索引
+                trades.append({'buy_date': df.iloc[i]['date'], 'buy_price': buy_price})
             elif action_signal in ["强卖出/规避", "弱卖出/规避"] and position == 1:
                 sell_price = latest_net_value
                 ret = (sell_price - buy_price) / buy_price
-                trades[-1]['sell_date'] = df.loc[i, 'date']
+                trades[-1]['sell_date'] = df.iloc[i]['date']
                 trades[-1]['sell_price'] = sell_price
                 trades[-1]['return'] = ret
                 position = 0
