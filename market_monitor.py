@@ -408,6 +408,11 @@ class MarketMonitor:
         df = self._calculate_indicators(df)
         df = df.dropna()
 
+        # 增加一个检查，确保dropna后仍有足够的数据
+        if df.empty or len(df) < 2:
+            logger.warning("基金 %s 计算指标后数据不足，无法回测", fund_code)
+            return {"cum_return": np.nan, "max_drawdown": np.nan, "sharpe_ratio": np.nan, "win_rate": np.nan, "cagr": np.nan, "total_trades": 0}
+
         # 模拟交易
         position = 0
         buy_price = 0
@@ -419,10 +424,11 @@ class MarketMonitor:
             latest_net_value = latest_data['net_value']
             
             # 最大回撤计算
-            if position == 0:
-                equity[i] = equity[i-1]
+            prev_net_value = df['net_value'].iloc[i-1]
+            if prev_net_value != 0:
+                equity[i] = equity[i-1] * (1 + (latest_net_value - prev_net_value) / prev_net_value)
             else:
-                equity[i] = equity[i-1] * (1 + (df['net_value'].iloc[i] - df['net_value'].iloc[i-1]) / df['net_value'].iloc[i-1])
+                equity[i] = equity[i-1]
 
             # 止损逻辑
             if position == 1 and (latest_net_value / buy_price) < 0.90:  # 止损10%
@@ -443,19 +449,20 @@ class MarketMonitor:
             if not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.95:
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 70) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma50_ratio > 1.2) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff < 0):
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
+                 (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1.2):
                 action_signal = "弱卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi < 35) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.9) and \
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.9) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
                 action_signal = "强买入"
             elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1):
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1):
                 action_signal = "弱买入"
             
             # 模拟交易
@@ -681,5 +688,5 @@ if __name__ == "__main__":
         monitor.perform_backtest()
         logger.info("脚本执行完成")
     except Exception as e:
-        logger.error("脚本运行失败: %s", e)
+        logger.error("脚本运行失败: %s", e, exc_info=True)
         raise
