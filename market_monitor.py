@@ -72,7 +72,7 @@ class MarketMonitor:
                 extracted_codes.add(code)
             
             sorted_codes = sorted(list(extracted_codes))
-            self.fund_codes = sorted_codes[:1000]
+            self.fund_codes = sorted_codes[:10]
             
             if not self.fund_codes:
                 logger.warning("未提取到任何有效基金代码，请检查 analysis_report.md")
