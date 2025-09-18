@@ -209,9 +209,9 @@ class MarketMonitor:
             manager_res = requests.get(manager_url, headers=self.headers, timeout=10)
             manager_res.raise_for_status()
             manager_selector = etree.HTML(manager_res.text)
-            manager_name = manager_selector.xpath('//div[contains(text(), "基金经理：")]/a/text()')
-            if manager_name:
-                details['manager'] = ", ".join(manager_name)
+            manager_name_list = manager_selector.xpath('//div[contains(text(), "基金经理：")]/a/text()')
+            if manager_name_list:
+                details['manager'] = ", ".join(manager_name_list)
             
             # 尝试获取持仓行业
             holdings_url = f"http://fundf10.eastmoney.com/ccmx_{fund_code}.html"
@@ -219,20 +219,21 @@ class MarketMonitor:
             holdings_res.raise_for_status()
             holdings_selector = etree.HTML(holdings_res.text)
             
-            # 找到最新的持仓行业表格
-            industry_table = holdings_selector.xpath('//div[@id="hytz"]/div/table')[0]
-            rows = industry_table.xpath('./tbody/tr')
-            
-            industries = []
-            for row in rows[:5]: # 只取前5个行业
-                cols = row.xpath('./td/text()')
-                if len(cols) > 1:
-                    industry_name = cols[0].strip()
-                    percentage = cols[1].strip()
-                    industries.append(f"{industry_name}({percentage})")
+            industry_tables = holdings_selector.xpath('//div[@id="hytz"]/div/table')
+            if industry_tables:
+                industry_table = industry_tables[0]
+                rows = industry_table.xpath('./tbody/tr')
+                
+                industries = []
+                for row in rows[:5]: # 只取前5个行业
+                    cols = row.xpath('./td/text()')
+                    if len(cols) > 1:
+                        industry_name = cols[0].strip()
+                        percentage = cols[1].strip()
+                        industries.append(f"{industry_name}({percentage})")
 
-            if industries:
-                details['industries'] = ", ".join(industries)
+                if industries:
+                    details['industries'] = ", ".join(industries)
 
             logger.info("基金 %s 详细信息获取成功: 经理=%s, 行业=%s", fund_code, details['manager'], details['industries'])
         except Exception as e:
