@@ -1,5 +1,5 @@
 import pandas as pd
-import akshare as ak
+import yfinance as yf
 import os
 import logging
 from datetime import datetime
@@ -20,34 +20,33 @@ if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
 # 配置指数代码和文件名
-INDEX_CODE = '000001' # 默认下载上证指数
-OUTPUT_FILE = os.path.join(DATA_DIR, f'{INDEX_CODE}.csv')
+# 对于沪深300指数，Yahoo Finance 的代码是 '000300.SS'
+INDEX_CODE = '000300.SS'
+OUTPUT_FILE = os.path.join(DATA_DIR, '000300.csv') # 保存为000300.csv
 
 def fetch_and_save_index_data():
-    """使用AkShare下载大盘指数历史数据并保存为CSV文件"""
+    """使用 yfinance 下载沪深300指数历史数据并保存为CSV文件"""
     logger.info("开始下载大盘指数历史数据 (%s)", INDEX_CODE)
     try:
-        # 使用akshare获取指定指数历史数据，日线级别
-        index_data_df = ak.stock_zh_index_daily(symbol=INDEX_CODE)
-
-        # 修正：将所有中文列名转换为英文
-        index_data_df = index_data_df.rename(columns={
-            '日期': 'date',
-            '开盘': 'open',
-            '收盘': 'close',
-            '最高': 'high',
-            '最低': 'low',
-            '成交量': 'volume',
-            '成交额': 'amount',
-            '振幅': 'amplitude',
-            '涨跌幅': 'change_percent',
-            '涨跌额': 'change_amount',
-            '换手率': 'turnover_rate'
-        })
+        # 使用 yfinance 获取沪深300指数的历史数据
+        index_data_df = yf.download(INDEX_CODE, period="max", interval="1d")
         
-        # 转换日期格式并设置索引
-        index_data_df['date'] = pd.to_datetime(index_data_df['date']).dt.date
-        index_data_df.set_index('date', inplace=True)
+        # 将日期索引转换为日期列，并确保格式正确
+        index_data_df.reset_index(inplace=True)
+        index_data_df['Date'] = pd.to_datetime(index_data_df['Date']).dt.date
+        index_data_df.set_index('Date', inplace=True)
+        
+        # 修正列名以与 market_monitor.py 兼容
+        index_data_df.rename(columns={
+            'Open': 'open',
+            'High': 'high',
+            'Low': 'low',
+            'Close': 'close',
+            'Volume': 'volume'
+        }, inplace=True)
+        
+        # 只保留需要的列
+        index_data_df = index_data_df[['open', 'high', 'low', 'close', 'volume']]
         
         # 保存到本地CSV文件
         index_data_df.to_csv(OUTPUT_FILE, encoding='utf-8')
