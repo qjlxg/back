@@ -30,6 +30,9 @@ def fetch_and_save_index_data():
         # 使用akshare获取指定指数历史数据，日线级别
         index_data_df = ak.stock_zh_index_daily(symbol=INDEX_CODE)
         
+        # 修正：将列名 '日期' 转换为 'date'，以便与后续处理兼容
+        index_data_df = index_data_df.rename(columns={'日期': 'date'})
+        
         # 转换日期格式并设置索引
         index_data_df['date'] = pd.to_datetime(index_data_df['date']).dt.date
         index_data_df.set_index('date', inplace=True)
