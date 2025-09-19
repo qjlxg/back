@@ -8,6 +8,7 @@ from datetime import datetime, time
 from io import StringIO
 import random
 import time as time_module
+from typing import Optional
 
 # 配置日志
 logging.basicConfig(
@@ -19,13 +20,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# 定义本地数据存储目录
+# 定义本地数据存储目录和文件
 DATA_DIR = 'index_data'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
 # 配置指数代码和文件名
-# 沪深300指数在天天基金网上的代码是 '000300'
 INDEX_CODE = '000300'
 OUTPUT_FILE = os.path.join(DATA_DIR, f'{INDEX_CODE}.csv')
 
@@ -33,6 +33,18 @@ OUTPUT_FILE = os.path.join(DATA_DIR, f'{INDEX_CODE}.csv')
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
 }
+
+def _load_local_data() -> pd.DataFrame:
+    """从本地文件加载已有的指数数据"""
+    if os.path.exists(OUTPUT_FILE):
+        logger.info("本地已存在指数数据，开始加载...")
+        try:
+            df = pd.read_csv(OUTPUT_FILE, parse_dates=['date'])
+            logger.info("本地指数数据加载完成，共 %d 行", len(df))
+            return df
+        except Exception as e:
+            logger.error("加载本地指数数据失败: %s", e)
+    return pd.DataFrame()
 
 @tenacity.retry(
     stop=tenacity.stop_after_attempt(5),
@@ -42,11 +54,18 @@ HEADERS = {
 )
 def fetch_and_save_index_data():
     """
-    从天天基金网下载沪深300指数历史净值数据并保存为CSV文件。
+    增量更新并保存沪深300指数历史净值数据。
     """
-    logger.info("开始下载大盘指数历史净值数据 (%s)...", INDEX_CODE)
+    logger.info("开始更新大盘指数历史净值数据 (%s)...", INDEX_CODE)
     
-    all_index_data = []
+    # 1. 加载本地数据
+    local_df = _load_local_data()
+    latest_local_date: Optional[datetime] = None
+    if not local_df.empty:
+        latest_local_date = local_df['date'].max()
+        logger.info("本地最新数据日期为: %s", latest_local_date.date())
+        
+    all_new_data = []
     page_index = 1
     
     while True:
@@ -74,8 +93,16 @@ def fetch_and_save_index_data():
                 break
             
             df_page = tables[0]
-            # 修正列名，只保留日期和单位净值（即净值）
-            df_page.columns = ['date', 'net_value', 'cumulative_net_value', 'daily_growth_rate', 'purchase_status', 'redemption_status', 'dividend']
+            
+            # 根据实际列数动态处理，避免硬编码导致解析失败
+            if len(df_page.columns) == 7:
+                df_page.columns = ['date', 'net_value', 'cumulative_net_value', 'daily_growth_rate', 'purchase_status', 'redemption_status', 'dividend']
+            elif len(df_page.columns) == 6:
+                df_page.columns = ['date', 'net_value', 'cumulative_net_value', 'daily_growth_rate', 'purchase_status', 'redemption_status']
+            else:
+                logger.warning("API返回的表格列数与预期不符（%d列），跳过此页。", len(df_page.columns))
+                break
+
             df_page = df_page[['date', 'net_value']].copy()
             df_page['date'] = pd.to_datetime(df_page['date'], errors='coerce')
             df_page['net_value'] = pd.to_numeric(df_page['net_value'], errors='coerce')
@@ -85,7 +112,22 @@ def fetch_and_save_index_data():
                 logger.info("第 %d 页无有效数据，爬取结束。", page_index)
                 break
             
-            all_index_data.append(df_page)
+            # 增量更新逻辑：检查新数据是否已存在于本地
+            has_new_data = False
+            for _, row in df_page.iterrows():
+                if latest_local_date and row['date'] > latest_local_date:
+                    all_new_data.append(row)
+                    has_new_data = True
+                elif latest_local_date and row['date'] <= latest_local_date:
+                    logger.info("已下载到本地最新数据，增量更新完成。")
+                    has_new_data = False
+                    break
+                elif not latest_local_date:
+                    # 如果本地没有数据，则全部视为新数据
+                    all_new_data.append(row)
+
+            if not has_new_data and latest_local_date:
+                break
             
             if page_index >= total_pages:
                 logger.info("已获取所有历史数据，共 %d 页，爬取结束。", total_pages)
@@ -101,16 +143,21 @@ def fetch_and_save_index_data():
             logger.error("数据解析失败: %s", str(e))
             raise
 
-    if all_index_data:
-        combined_df = pd.concat(all_index_data, ignore_index=True)
-        # 去重并按日期排序
-        combined_df = combined_df.drop_duplicates(subset=['date']).sort_values(by='date', ascending=True)
+    if all_new_data:
+        # 将新数据转换为DataFrame
+        new_df = pd.DataFrame(all_new_data)
         
+        # 合并本地数据和新数据，去重并排序
+        combined_df = pd.concat([local_df, new_df], ignore_index=True)
+        combined_df = combined_df.drop_duplicates(subset=['date'], keep='last').sort_values(by='date', ascending=True)
+
         # 保存到本地CSV文件
         combined_df.to_csv(OUTPUT_FILE, index=False, encoding='utf-8')
         
-        logger.info("成功下载并保存数据到: %s", OUTPUT_FILE)
+        logger.info("成功更新并保存数据到: %s", OUTPUT_FILE)
         logger.info("最新数据日期: %s", combined_df['date'].max().date())
+    elif not local_df.empty:
+        logger.info("没有发现新数据，使用本地历史数据进行分析。")
     else:
         logger.warning("未获取到任何指数数据。")
 
