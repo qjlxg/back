@@ -391,15 +391,15 @@ class MarketMonitor:
                         # 如果当前页没有新数据，且之前已经发现过新数据，则停止爬取
                         if has_new_data:
                             logger.info("基金 %s 已获取所有新数据，爬取结束。", fund_code)
-                        break
+                            break
                         # 如果当前页没有新数据，且是第一页，则说明没有新数据
                         elif page_index == 1:
                             logger.info("基金 %s 无新数据，爬取结束。", fund_code)
                             break
                     else:
                         has_new_data = True
-                    all_new_data.append(new_df_page)
-                    logger.info("第 %d 页: 发现 %d 行新数据", page_index, len(new_df_page))
+                        all_new_data.append(new_df_page)
+                        logger.info("第 %d 页: 发现 %d 行新数据", page_index, len(new_df_page))
                 else:
                     # 如果是首次下载，则获取所有数据
                     all_new_data.append(df_page)
@@ -624,7 +624,7 @@ class MarketMonitor:
 
         buy_signals = []
         for code, data in fund_data.items():
-            if data['action_signal'] in ["强买入", "弱买入"] and not np.isnan(data['rsi']):
+            if data and data['action_signal'] in ["强买入", "弱买入"] and not np.isnan(data['rsi']):
                 score = self._calculate_buy_score(data)
                 buy_signals.append({
                     'code': code,
