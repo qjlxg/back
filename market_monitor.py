@@ -1,4 +1,3 @@
-<DOCUMENT filename="market_monitor.py">
 import pandas as pd
 import numpy as np
 import re
@@ -995,4 +994,3 @@ if __name__ == "__main__":
         logger.info("脚本运行结束")
     except Exception as e:
         logger.exception("脚本运行失败: %s", e)
-</DOCUMENT>
