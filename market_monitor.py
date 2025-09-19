@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 import re
@@ -34,7 +35,9 @@ class MarketMonitor:
         self.backtest_output_file = backtest_output_file
         self.fund_codes = []
         self.fund_data = {}
-        self.market_index_data = {}  # 新增：用于存储大盘指数数据
+        self.index_code = '000300'  # 沪深300指数代码
+        self.index_data = {}
+        self.index_df = pd.DataFrame()
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
         }
@@ -73,12 +76,12 @@ class MarketMonitor:
                 extracted_codes.add(code)
             
             sorted_codes = sorted(list(extracted_codes))
-            self.fund_codes = sorted_codes[:1000]
+            self.fund_codes = sorted_codes[:10]
             
             if not self.fund_codes:
                 logger.warning("未提取到任何有效基金代码，请检查 analysis_report.md")
             else:
-                logger.info("提取到 %d 个基金（测试限制前1000个）: %s", len(self.fund_codes), self.fund_codes)
+                logger.info("提取到 %d 个基金（测试限制前10个）: %s", len(self.fund_codes), self.fund_codes)
             
         except Exception as e:
             logger.error("解析报告文件失败: %s", e)
@@ -190,6 +193,93 @@ class MarketMonitor:
                 raise
             except Exception as e:
                 logger.error("基金 %s API数据解析失败: %s", fund_code, str(e))
+                raise
+
+        # 合并新数据并返回
+        if all_new_data:
+            new_combined_df = pd.concat(all_new_data, ignore_index=True)
+            return new_combined_df[['date', 'net_value']]
+        else:
+            return pd.DataFrame()
+
+    def _fetch_index_data(self, latest_local_date=None):
+        """
+        从网络获取大盘指数数据（沪深300），实现增量更新。
+        """
+        all_new_data = []
+        page_index = 1
+        has_new_data = False
+        
+        while True:
+            url = f"http://fundf10.eastmoney.com/F10DataApi.aspx?type=lsjz&code={self.index_code}&page={page_index}&per=20"
+            logger.info("正在获取大盘指数 %s 的第 %d 页数据...", self.index_code, page_index)
+            
+            try:
+                response = requests.get(url, headers=self.headers, timeout=30)
+                response.raise_for_status()
+                
+                content_match = re.search(r'content:"(.*?)"', response.text, re.S)
+                pages_match = re.search(r'pages:(\d+)', response.text)
+                
+                if not content_match or not pages_match:
+                    logger.error("大盘指数 %s API返回内容格式不正确，可能已无数据或接口变更", self.index_code)
+                    break
+
+                raw_content_html = content_match.group(1).replace('\\"', '"')
+                total_pages = int(pages_match.group(1))
+                
+                tables = pd.read_html(StringIO(raw_content_html))
+                
+                if not tables:
+                    logger.warning("大盘指数 %s 在第 %d 页未找到数据表格，爬取结束", self.index_code, page_index)
+                    break
+                
+                df_page = tables[0]
+                df_page.columns = ['date', 'net_value', 'cumulative_net_value', 'daily_growth_rate', 'purchase_status', 'redemption_status', 'dividend']
+                df_page = df_page[['date', 'net_value']].copy()
+                df_page['date'] = pd.to_datetime(df_page['date'], errors='coerce')
+                df_page['net_value'] = pd.to_numeric(df_page['net_value'], errors='coerce')
+                df_page = df_page.dropna(subset=['date', 'net_value'])
+                
+                # 如果是增量更新模式，检查是否已获取到本地最新数据之前的数据
+                if latest_local_date:
+                    new_df_page = df_page[df_page['date'].dt.date > latest_local_date]
+                    if new_df_page.empty:
+                        # 如果当前页没有新数据，且之前已经发现过新数据，则停止爬取
+                        if has_new_data:
+                            logger.info("大盘指数 %s 已获取所有新数据，爬取结束。", self.index_code)
+                            break
+                        # 如果当前页没有新数据，且是第一页，则说明没有新数据
+                        elif page_index == 1:
+                            logger.info("大盘指数 %s 无新数据，爬取结束。", self.index_code)
+                            break
+                    else:
+                        has_new_data = True
+                        all_new_data.append(new_df_page)
+                        logger.info("第 %d 页: 发现 %d 行新数据", page_index, len(new_df_page))
+                else:
+                    # 如果是首次下载，则获取所有数据
+                    all_new_data.append(df_page)
+
+                logger.info("大盘指数 %s 总页数: %d, 当前页: %d, 当前页行数: %d", self.index_code, total_pages, page_index, len(df_page))
+                
+                # 如果是增量更新模式，且当前页数据比最新数据日期早，则结束循环
+                if latest_local_date and (df_page['date'].dt.date <= latest_local_date).any():
+                    logger.info("大盘指数 %s 已追溯到本地数据，增量爬取结束。", self.index_code)
+                    break
+
+                if page_index >= total_pages:
+                    logger.info("大盘指数 %s 已获取所有历史数据，共 %d 页，爬取结束", self.index_code, total_pages)
+                    break
+                
+                page_index += 1
+                time_module.sleep(random.uniform(1, 2))  # 延长sleep到1-2秒，减少限速风险
+                
+            except requests.exceptions.RequestException as e:
+                logger.error("大盘指数 %s API请求失败: %s", self.index_code, str(e))
+                raise
+            except Exception as e:
+                logger.error("大盘指数 %s API数据解析失败: %s", self.index_code, str(e))
                 raise
 
         # 合并新数据并返回
@@ -323,45 +413,44 @@ class MarketMonitor:
                 'advice': "观察",
                 'action_signal': 'N/A'
             }
-            
-    def _fetch_index_data(self, index_code='399300'):
-        """从网络获取指数数据，并计算技术指标"""
-        url = f"http://push2his.eastmoney.com/api/qt/stock/kline/get?secid=1.{index_code}&fields1=f1&fields2=f51,f52,f53,f54,f55&klt=101&fqt=0&beg=19900101&end=20500101"
-        logger.info(f"正在获取大盘指数 {index_code} 数据...")
-        try:
-            response = requests.get(url, headers=self.headers, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            
-            if 'data' in data and 'klines' in data['data']:
-                klines = data['data']['klines']
-                df = pd.DataFrame([k.split(',') for k in klines], columns=['date', 'open', 'close', 'high', 'low'])
-                df['date'] = pd.to_datetime(df['date'])
-                df['net_value'] = pd.to_numeric(df['close'])
-                
-                df = self._calculate_indicators(df[['date', 'net_value']])
-                if df is not None and not df.empty:
-                    latest_data = df.iloc[-1]
-                    self.market_index_data = {
-                        'date': latest_data['date'].strftime('%Y-%m-%d'),
-                        'net_value': latest_data['net_value'],
-                        'rsi': latest_data['rsi'],
-                        'ma_ratio': latest_data['ma_ratio'],
-                        'macd_diff': latest_data['macd'] - latest_data['signal'],
-                        'bb_upper': latest_data['bb_upper'],
-                        'bb_lower': latest_data['bb_lower'],
-                        'bb_position': '上轨上方' if latest_data['net_value'] > latest_data['bb_upper'] else '下轨下方' if latest_data['net_value'] < latest_data['bb_lower'] else '中轨'
-                    }
-                    logger.info(f"大盘指数 {index_code} 数据获取成功。")
-                else:
-                    logger.warning(f"大盘指数 {index_code} 数据不足，无法分析。")
-            else:
-                logger.error(f"大盘指数 {index_code} API返回内容格式不正确。")
 
-        except Exception as e:
-            logger.error(f"获取大盘指数 {index_code} 数据失败: {e}")
-            self.market_index_data = {}
+    def _analyze_index(self):
+        """分析大盘指数，计算技术指标和信号"""
+        logger.info("开始分析大盘指数 %s...", self.index_code)
+        local_df = self._read_local_data(self.index_code)
+        latest_local_date = local_df['date'].max().date() if not local_df.empty else None
 
+        new_df = self._fetch_index_data(latest_local_date)
+        
+        if not new_df.empty:
+            df_final = pd.concat([local_df, new_df]).drop_duplicates(subset=['date'], keep='last').sort_values(by='date', ascending=True)
+            self._save_to_local_file(self.index_code, df_final)
+            self.index_df = df_final
+            result = self._get_latest_signals(self.index_code, df_final.tail(100))
+            self.index_data = result
+            logger.info("大盘指数 %s 分析完成", self.index_code)
+        elif not local_df.empty:
+            # 如果没有新数据，且本地有数据，则使用本地数据计算信号
+            logger.info("大盘指数 %s 无新数据，使用本地历史数据进行分析", self.index_code)
+            self.index_df = local_df
+            result = self._get_latest_signals(self.index_code, local_df.tail(100))
+            self.index_data = result
+            logger.info("大盘指数 %s 分析完成", self.index_code)
+        else:
+            # 如果既没有新数据，本地又没有数据，则返回失败
+            logger.error("大盘指数 %s 未获取到任何有效数据，且本地无缓存", self.index_code)
+            self.index_data = {
+                'fund_code': self.index_code,
+                'latest_net_value': "数据获取失败",
+                'rsi': np.nan,
+                'ma_ratio': np.nan,
+                'macd_diff': np.nan,
+                'bb_upper': np.nan,
+                'bb_lower': np.nan,
+                'bb_position': 'N/A',
+                'advice': "观察",
+                'action_signal': 'N/A'
+            }
 
     def get_fund_data(self):
         """主控函数：优先从本地加载，仅在数据非最新或不完整时下载"""
@@ -370,11 +459,8 @@ class MarketMonitor:
         if not self.fund_codes:
             logger.error("没有提取到任何基金代码，无法继续处理")
             return
-            
-        # 步骤2: 获取大盘数据
-        self._fetch_index_data()
 
-        # 步骤3: 预加载本地数据并检查是否需要下载
+        # 步骤2: 预加载本地数据并检查是否需要下载
         logger.info("开始预加载本地缓存数据...")
         fund_codes_to_fetch = []
         expected_latest_date = self._get_expected_latest_date()
@@ -405,7 +491,7 @@ class MarketMonitor:
             
             fund_codes_to_fetch.append(fund_code)
 
-        # 步骤4: 多线程网络下载和处理
+        # 步骤3: 多线程网络下载和处理
         if fund_codes_to_fetch:
             logger.info("开始使用多线程获取 %d 个基金的新数据...", len(fund_codes_to_fetch))
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -430,6 +516,9 @@ class MarketMonitor:
             logger.info("所有基金数据处理完成。")
         else:
             logger.error("所有基金数据均获取失败。")
+
+        # 新增：分析大盘指数
+        self._analyze_index()
 
     def _process_single_fund(self, fund_code):
         """处理单个基金数据：读取本地，下载增量，合并，保存，并计算信号"""
@@ -585,28 +674,6 @@ class MarketMonitor:
     def generate_report(self):
         """生成市场情绪与技术指标监控报告"""
         logger.info("正在生成市场监控报告...")
-        
-        # 写入大盘分析部分
-        market_analysis_md = ""
-        if self.market_index_data:
-            data = self.market_index_data
-            rsi_str = f"{data['rsi']:.2f}" if isinstance(data['rsi'], (float, int)) and not np.isnan(data['rsi']) else "N/A"
-            ma_ratio_str = f"{data['ma_ratio']:.2f}" if isinstance(data['ma_ratio'], (float, int)) and not np.isnan(data['ma_ratio']) else "N/A"
-            
-            macd_signal = "N/A"
-            if isinstance(data['macd_diff'], (float, int)) and not np.isnan(data['macd_diff']):
-                macd_signal = "金叉" if data['macd_diff'] > 0 else "死叉"
-
-            market_analysis_md += f"## 大盘情绪与趋势分析 (沪深300)\n\n"
-            market_analysis_md += f"分析日期: {data['date']}\n"
-            market_analysis_md += f"**最新点位:** {data['net_value']:.2f}\n"
-            market_analysis_md += f"**RSI指标:** {rsi_str} ({'市场超买' if data['rsi'] > 70 else '市场超卖' if data['rsi'] < 30 else '中性'})\n"
-            market_analysis_md += f"**净值/MA50比率:** {ma_ratio_str} ({'高于长期均线' if data['ma_ratio'] > 1 else '低于长期均线'})\n"
-            market_analysis_md += f"**MACD信号:** {macd_signal}\n"
-            market_analysis_md += f"**布林带位置:** {data['bb_position']}\n\n"
-            market_analysis_md += "---\n\n"
-
-
         report_df_list = []
         for fund_code in self.fund_codes:
             data = self.fund_data.get(fund_code)
@@ -687,10 +754,25 @@ class MarketMonitor:
         with open(self.output_file, 'w', encoding='utf-8') as f:
             f.write(f"# 市场情绪与技术指标监控报告\n\n")
             f.write(f"生成日期: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-            f.write(market_analysis_md)
+
+            # 新增：大盘指数分析部分
+            f.write(f"## 大盘指数分析 (沪深300)\n")
+            f.write("此部分提供大盘整体市场情绪参考，用于辅助基金投资决策。\n\n")
+            index_latest_net_value_str = f"{self.index_data['latest_net_value']:.2f}" if isinstance(self.index_data['latest_net_value'], (float, int)) else str(self.index_data['latest_net_value'])
+            index_rsi_str = f"{self.index_data['rsi']:.2f}" if isinstance(self.index_data['rsi'], (float, int)) and not np.isnan(self.index_data['rsi']) else "N/A"
+            index_ma_ratio_str = f"{self.index_data['ma_ratio']:.2f}" if isinstance(self.index_data['ma_ratio'], (float, int)) and not np.isnan(self.index_data['ma_ratio']) else "N/A"
+            index_macd_signal = "N/A"
+            if isinstance(self.index_data['macd_diff'], (float, int)) and not np.isnan(self.index_data['macd_diff']):
+                index_macd_signal = "金叉" if self.index_data['macd_diff'] > 0 else "死叉"
+            index_bollinger_pos = self.index_data.get('bb_position', "中轨")
+            f.write("| 指数代码 | 最新点位 | RSI | 点位/MA50 | MACD信号 | 布林带位置 | 投资建议 | 行动信号 |\n")
+            f.write("|----------|----------|-----|-----------|----------|------------|----------|----------|\n")
+            f.write(f"| {self.index_code} | {index_latest_net_value_str} | {index_rsi_str} | {index_ma_ratio_str} | {index_macd_signal} | {index_bollinger_pos} | {self.index_data['advice']} | {self.index_data['action_signal']} |\n\n")
+
             f.write(f"## 推荐基金技术指标 (处理基金数: {len(self.fund_codes)})\n")
             f.write("此表格已按**行动信号优先级**排序，'强买入'基金将排在最前面。\n")
-            f.write("**注意：** 当'行动信号'和'投资建议'冲突时，请以**行动信号**为准，其条件更严格，更适合机械化决策。\n\n")
+            f.write("**注意：** 当'行动信号'和'投资建议'冲突时，请以**行动信号**为准，其条件更严格，更适合机械化决策。\n")
+            f.write("**大盘参考：** 请结合上方大盘分析结果，若大盘行动信号为'强卖出/规避'或'弱卖出/规避'，建议降低基金仓位。\n\n")
             f.write(markdown_table)
         
         logger.info("报告生成完成: %s", self.output_file)
