@@ -31,28 +31,28 @@ def fetch_and_save_index_data():
         # 使用 yfinance 获取沪深300指数的历史数据
         index_data_df = yf.download(INDEX_CODE, period="max", interval="1d")
         
-        # 将日期索引转换为日期列，并确保格式正确
+        # 将日期索引转换为日期列
         index_data_df.reset_index(inplace=True)
-        index_data_df['Date'] = pd.to_datetime(index_data_df['Date']).dt.date
-        index_data_df.set_index('Date', inplace=True)
-        
+
         # 修正列名以与 market_monitor.py 兼容
         index_data_df.rename(columns={
+            'Date': 'date', # 将 'Date' 改为 'date'
             'Open': 'open',
             'High': 'high',
             'Low': 'low',
-            'Close': 'close',
+            'Close': 'close', # 将 'Close' 改为 'close'
             'Volume': 'volume'
         }, inplace=True)
         
-        # 只保留需要的列
-        index_data_df = index_data_df[['open', 'high', 'low', 'close', 'volume']]
+        # 转换日期格式，并确保只保留需要的列
+        index_data_df['date'] = pd.to_datetime(index_data_df['date']).dt.date
+        index_data_df = index_data_df[['date', 'open', 'high', 'low', 'close', 'volume']]
         
         # 保存到本地CSV文件
-        index_data_df.to_csv(OUTPUT_FILE, encoding='utf-8')
+        index_data_df.to_csv(OUTPUT_FILE, index=False, encoding='utf-8')
         
         logger.info("成功下载并保存数据到: %s", OUTPUT_FILE)
-        logger.info("最新数据日期: %s", index_data_df.index.max())
+        logger.info("最新数据日期: %s", index_data_df['date'].max())
         
     except Exception as e:
         logger.error("下载大盘数据失败: %s", e)
