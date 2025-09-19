@@ -53,11 +53,30 @@ class MarketMonitor:
         if now.time() < update_time:
             # 如果当前时间早于21:00，则期望最新日期为昨天
             expected_date = now.date() - timedelta(days=1)
+            logger.info("当前时间早于21:00，期望最新数据日期: %s (昨天)", expected_date)
         else:
             # 否则，期望最新日期为今天
             expected_date = now.date()
-        logger.info("当前时间: %s, 期望最新数据日期: %s", now.strftime('%Y-%m-%d %H:%M:%S'), expected_date)
+            logger.info("当前时间晚于21:00，期望最新数据日期: %s (今天)", expected_date)
         return expected_date
+
+    def _has_latest_data(self, local_df, expected_date):
+        """检查本地数据是否包含期望的最新日期且数据有效"""
+        if local_df.empty:
+            return False
+        
+        # 检查是否有期望日期的数据
+        has_expected_date = any(local_df['date'].dt.date == expected_date)
+        
+        # 额外检查：确保期望日期的数据是有效的（有净值）
+        if has_expected_date:
+            expected_data = local_df[local_df['date'].dt.date == expected_date]
+            if not expected_data.empty and not expected_data['net_value'].isna().all():
+                logger.debug("基金本地数据包含 %s 的有效数据，净值范围: %.4f - %.4f", 
+                           expected_date, expected_data['net_value'].min(), expected_data['net_value'].max())
+                return True
+        
+        return False
 
     def _parse_report(self, report_path='analysis_report.md'):
         """从 analysis_report.md 提取推荐基金代码"""
@@ -664,23 +683,35 @@ class MarketMonitor:
             fund_codes_to_fetch = []
             expected_latest_date = self._get_expected_latest_date()
             min_data_points = 26 # 确保有足够数据计算技术指标
+            
+            logger.info("期望最新数据日期: %s", expected_latest_date)
+            
             for fund_code in self.fund_codes:
                 local_df = self._read_local_data(fund_code)
                 if not local_df.empty:
                     latest_local_date = local_df['date'].max().date()
                     data_points = len(local_df)
-                    # 检查数据是否最新且完整
-                    if latest_local_date >= expected_latest_date and data_points >= min_data_points:
-                        logger.info("基金 %s 的本地数据已是最新 (%s, 期望: %s) 且数据量足够 (%d 行)，直接加载。", fund_code, latest_local_date, expected_latest_date, data_points)
+                    
+                    # 🔧 修复后的检查逻辑：
+                    # 1. 检查数据量是否足够
+                    # 2. 检查本地数据是否包含期望的最新日期且数据有效
+                    has_expected_data = self._has_latest_data(local_df, expected_latest_date)
+                    
+                    if data_points >= min_data_points and has_expected_data:
+                        logger.info("基金 %s 的本地数据已包含期望日期 %s 的有效数据 (最新日期: %s, 数据量: %d 行)，直接加载。", 
+                                  fund_code, expected_latest_date, latest_local_date, data_points)
                         self.fund_data[fund_code] = self._get_latest_signals(fund_code, local_df.tail(100))
                         continue
                     else:
-                        if latest_local_date < expected_latest_date:
-                            logger.info("基金 %s 本地数据已过时（最新日期为 %s，期望 %s），需要从网络获取新数据。", fund_code, latest_local_date, expected_latest_date)
+                        if not has_expected_data:
+                            logger.info("基金 %s 本地数据缺少期望日期 %s 的有效数据 (最新日期为 %s)，需要从网络获取新数据。", 
+                                      fund_code, expected_latest_date, latest_local_date)
                         if data_points < min_data_points:
-                            logger.info("基金 %s 本地数据量不足（仅 %d 行，需至少 %d 行），需要从网络获取。", fund_code, data_points, min_data_points)
+                            logger.info("基金 %s 本地数据量不足（仅 %d 行，需至少 %d 行），需要从网络获取。", 
+                                      fund_code, data_points, min_data_points)
                 else:
                     logger.info("基金 %s 本地数据不存在，需要从网络获取。", fund_code)
+                
                 fund_codes_to_fetch.append(fund_code)
             
             # 步骤 4: 多线程网络下载和处理
