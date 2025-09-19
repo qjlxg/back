@@ -28,10 +28,11 @@ if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
 class MarketMonitor:
-    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md', backtest_output_file='backtest_report.md'):
+    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md', backtest_output_file='backtest_report.md', portfolio_output_file='portfolio_recommendation.md'):
         self.report_file = report_file
         self.output_file = output_file
         self.backtest_output_file = backtest_output_file
+        self.portfolio_output_file = portfolio_output_file
         self.fund_codes = []
         self.fund_data = {}
         self.headers = {
@@ -462,20 +463,20 @@ class MarketMonitor:
             if not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.95:
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 70) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma50_ratio > 1.2) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff < 0):
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
                  (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1.2):
                 action_signal = "弱卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi < 35) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.9) and \
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.9) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
                 action_signal = "强买入"
             elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1):
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1):
                 action_signal = "弱买入"
             
             # 模拟交易
@@ -750,25 +751,32 @@ class MarketMonitor:
         return score
 
     def generate_portfolio_recommendation(self):
-        """生成投资组合推荐"""
+        """生成投资组合推荐并输出到Markdown文件"""
+        logger.info("正在生成投资组合推荐报告...")
         buy_candidates = self._get_portfolio_signals(self.fund_data, max_positions=3)
         
-        print("\n" + "="*60)
-        print("📊 今日投资组合推荐 (最多3支)")
-        print("="*60)
-        
-        if buy_candidates:
-            for i, candidate in enumerate(buy_candidates, 1):
-                signal_emoji = "🟢" if candidate['signal'] == "强买入" else "🟡"
-                print(f"{i}. {signal_emoji} {candidate['code']} "
-                      f"(评分: {candidate['score']:.0f}, RSI: {candidate['rsi']:.1f})")
+        with open(self.portfolio_output_file, 'w', encoding='utf-8') as f:
+            f.write(f"# 今日投资组合推荐\n\n")
+            f.write(f"生成日期: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            f.write(f"此报告根据技术指标筛选出最佳买入机会，并按评分排序。建议仅供参考。\n\n")
+            
             if buy_candidates:
+                f.write(f"## 最佳买入机会 (最多3支)\n\n")
+                f.write("| 基金代码 | 行动信号 | 买入评分 | RSI | 净值/MA50 |\n")
+                f.write("|----------|----------|----------|-----|-------------|\n")
+                for candidate in buy_candidates:
+                    f.write(f"| {candidate['code']} | {candidate['signal']} | {candidate['score']:.0f} | {candidate['rsi']:.1f} | {candidate['ma_ratio']:.2f} |\n")
+                
+                f.write("\n")
                 suggested_amount = buy_candidates[0]['score'] // 10 * 100
-                print(f"\n💰 建议分配: 每支{ suggested_amount }元")
-                print(f"📈 今日买入机会: {len(buy_candidates)}/{len(self.fund_codes)}")
-        else:
-            print("❌ 今日无符合条件的买入机会，建议观望")
-            print(f"📊 总扫描基金数: {len(self.fund_codes)}")
+                f.write(f"**💰 建议分配:** 每支{suggested_amount}元\n")
+                f.write(f"**📈 今日买入机会:** {len(buy_candidates)}/{len(self.fund_codes)}\n")
+            else:
+                f.write("## 今日无符合条件的买入机会\n\n")
+                f.write("建议观望，耐心等待更好的入场时机。\n")
+                f.write(f"📊 总扫描基金数: {len(self.fund_codes)}\n")
+                
+        logger.info("投资组合推荐报告生成完成: %s", self.portfolio_output_file)
 
 
 if __name__ == "__main__":
