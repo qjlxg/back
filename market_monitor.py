@@ -242,7 +242,7 @@ class MarketMonitor:
                 logger.warning("基金 %s 数据不足，跳过计算", fund_code)
                 return {
                     'fund_code': fund_code, 'latest_net_value': "数据获取失败", 'rsi': np.nan, 'ma_ratio': np.nan,
-                    'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 'advice': "观察", 'action_signal': 'N/A'
+                    'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 'bb_position': 'N/A', 'advice': "观察", 'action_signal': 'N/A'
                 }
             
             latest_data = processed_df.iloc[-1]
@@ -289,6 +289,13 @@ class MarketMonitor:
                  (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1):
                 action_signal = "弱买入"
 
+            # 计算布林带位置
+            bb_position = "中轨"
+            if not np.isnan(latest_net_value) and not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper:
+                bb_position = "上轨上方"
+            elif not np.isnan(latest_net_value) and not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower:
+                bb_position = "下轨下方"
+
             return {
                 'fund_code': fund_code,
                 'latest_net_value': latest_net_value,
@@ -297,6 +304,7 @@ class MarketMonitor:
                 'macd_diff': latest_macd_diff,
                 'bb_upper': latest_bb_upper,
                 'bb_lower': latest_bb_lower,
+                'bb_position': bb_position,
                 'advice': advice,
                 'action_signal': action_signal
             }
@@ -310,6 +318,7 @@ class MarketMonitor:
                 'macd_diff': np.nan,
                 'bb_upper': np.nan,
                 'bb_lower': np.nan,
+                'bb_position': 'N/A',
                 'advice': "观察",
                 'action_signal': 'N/A'
             }
@@ -368,7 +377,8 @@ class MarketMonitor:
                         logger.error("处理基金 %s 数据时出错: %s", fund_code, str(e))
                         self.fund_data[fund_code] = {
                             'fund_code': fund_code, 'latest_net_value': "数据获取失败", 'rsi': np.nan,
-                            'ma_ratio': np.nan, 'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 'advice': "观察", 'action_signal': 'N/A'
+                            'ma_ratio': np.nan, 'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 
+                            'bb_position': 'N/A', 'advice': "观察", 'action_signal': 'N/A'
                         }
         else:
             logger.info("所有基金数据均来自本地缓存，无需网络下载。")
@@ -465,7 +475,7 @@ class MarketMonitor:
                 action_signal = "强买入"
             elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1):
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1):
                 action_signal = "弱买入"
             
             # 模拟交易
@@ -544,14 +554,8 @@ class MarketMonitor:
                 if isinstance(data['macd_diff'], (float, int)) and not np.isnan(data['macd_diff']):
                     macd_signal = "金叉" if data['macd_diff'] > 0 else "死叉"
                 
-                bollinger_pos = "中轨"  # 默认中轨
-                if isinstance(data['latest_net_value'], (float, int)):
-                    if isinstance(data['bb_upper'], (float, int)) and not np.isnan(data['bb_upper']) and data['latest_net_value'] > data['bb_upper']:
-                        bollinger_pos = "上轨上方"
-                    elif isinstance(data['bb_lower'], (float, int)) and not np.isnan(data['bb_lower']) and data['latest_net_value'] < data['bb_lower']:
-                        bollinger_pos = "下轨下方"
-                else:
-                    bollinger_pos = "N/A"
+                # 使用计算好的bb_position
+                bollinger_pos = data.get('bb_position', "中轨")
                 
                 report_df_list.append({
                     "基金代码": fund_code,
@@ -682,9 +686,6 @@ class MarketMonitor:
         # 生成回测报告
         self._generate_backtest_report(backtest_results)
 
-    # 从这里开始是重复部分，之前的文件中在__name__ == "__main__"之前复制了一遍
-    # 导致了语法错误，我已将其删掉，以下代码是之前未被复制的部分，现在补齐
-    
     def _get_portfolio_signals(self, fund_data, max_positions=5):
         """根据评分获取最佳买入机会，并限制最大持仓数"""
         buy_candidates = []
@@ -706,32 +707,42 @@ class MarketMonitor:
     def _calculate_buy_score(self, data):
         """根据多个指标计算买入评分，用于筛选"""
         score = 0
-        if not np.isnan(data['rsi']) and data['rsi'] < 30:
+        
+        # RSI评分
+        if pd.isna(data['rsi']):
+            score += 0
+        elif data['rsi'] < 30:
             score += 40
-        elif not np.isnan(data['rsi']) and data['rsi'] < 45:
+        elif data['rsi'] < 45:
             score += 30
-
-        if not np.isnan(data['ma_ratio']) and data['ma_ratio'] < 0.9:
-            score += 30
-        elif not np.isnan(data['ma_ratio']) and data['ma_ratio'] < 1:
-            score += 20
-
-        if not np.isnan(data['macd_diff']) and data['macd_diff'] > 0:
+        else:
             score += 10
-        elif not np.isnan(data['macd_diff']) and data['macd_diff'] < 0:
+
+        # MA比率评分
+        if pd.isna(data['ma_ratio']):
+            score += 0
+        elif data['ma_ratio'] < 0.9:
+            score += 30
+        elif data['ma_ratio'] < 1:
+            score += 20
+        else:
             score += 5
 
-        # 布林带位置评分
-        bollinger_pos = "中轨"
-        if isinstance(data['latest_net_value'], (float, int)):
-            if isinstance(data['bb_upper'], (float, int)) and not np.isnan(data['bb_upper']) and data['latest_net_value'] > data['bb_upper']:
-                bollinger_pos = "上轨上方"
-            elif isinstance(data['bb_lower'], (float, int)) and not np.isnan(data['bb_lower']) and data['latest_net_value'] < data['bb_lower']:
-                bollinger_pos = "下轨下方"
+        # MACD评分
+        if pd.isna(data['macd_diff']):
+            score += 0
+        elif data['macd_diff'] > 0:
+            score += 10
+        elif data['macd_diff'] < 0:
+            score += 5
+        else:
+            score += 0
 
-        if bollinger_pos == "下轨下方":
+        # 布林带位置评分 - 直接使用已计算的 bb_position
+        bb_position = data.get('bb_position', "中轨")
+        if bb_position == "下轨下方":
             score += 25
-        elif bollinger_pos == "中轨":
+        elif bb_position == "中轨":
             score += 15
         else:
             score += 5
@@ -754,8 +765,10 @@ class MarketMonitor:
             if buy_candidates:
                 suggested_amount = buy_candidates[0]['score'] // 10 * 100
                 print(f"\n💰 建议分配: 每支{ suggested_amount }元")
+                print(f"📈 今日买入机会: {len(buy_candidates)}/{len(self.fund_codes)}")
         else:
             print("❌ 今日无符合条件的买入机会，建议观望")
+            print(f"📊 总扫描基金数: {len(self.fund_codes)}")
 
 
 if __name__ == "__main__":
