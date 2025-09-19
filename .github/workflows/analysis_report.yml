@@ -1,0 +1,79 @@
+# 工作流名称，将显示在 GitHub Actions 页面
+name: Run Fund Analysis Script with Selenium
+
+# 触发工作流的事件
+on:
+  # 允许手动在 GitHub 界面上运行工作流
+  workflow_dispatch:
+  # 定时任务，例如每天上海时间 08:00 运行
+  schedule:
+    - cron: '0 0 * * *'
+  # 当 fund_analyzer.py 或工作流文件本身被修改并推送时，自动运行
+  push:
+    paths:
+      - 'fund_analyzer.py'
+      - '.github/workflows/run_fund_analysis.yml'
+
+# 为整个工作流提供权限
+permissions:
+  contents: write
+
+# 定义工作任务
+jobs:
+  run-script-and-commit:
+    runs-on: ubuntu-latest
+
+    # 设置环境变量，包括时区和 ChromeDriver 路径
+    env:
+      TZ: Asia/Shanghai
+      CHROME_BINARY_PATH: /usr/bin/chromium-browser
+      CHROMEDRIVER_PATH: /usr/bin/chromedriver
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          # 更新 pip
+          python -m pip install --upgrade pip
+          # 安装 Python 库，特别是 selenium
+          pip install pandas numpy requests beautifulsoup4 lxml akshare selenium --upgrade
+          # 安装 Chromium 浏览器和 ChromeDriver
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+          # 检查 Chromium 和 ChromeDriver 版本
+          chromium-browser --version
+          chromedriver --version
+
+      - name: Verify Chromium and ChromeDriver paths
+        run: |
+          ls -l /usr/bin/chromium-browser
+          ls -l /usr/bin/chromedriver
+          echo "CHROME_BINARY_PATH: $CHROME_BINARY_PATH"
+          echo "CHROMEDRIVER_PATH: $CHROMEDRIVER_PATH"
+
+      - name: Run Python script
+        run: |
+          # 直接运行脚本，脚本本身会生成 analysis_report.md
+          python fund_analyzer.py
+
+      - name: Commit new analysis report and data
+        run: |
+          # 配置 Git
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          # 添加生成的报告、缓存和日志文件
+          git add analysis_report.md fund_cache.json fund_analyzer.log
+          # 如果有更改，则提交
+          git diff --staged --quiet || git commit -m "Auto-generated analysis report for $(date +'%Y-%m-%d')"
+          
+      - name: Push changes
+        run: |
+          # 推送更改到仓库，如果无更改则忽略错误
+          git push || echo "No changes to push."
