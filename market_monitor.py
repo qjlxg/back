@@ -13,14 +13,86 @@ import time as time_module
 import json
 from typing import Dict, Optional, Tuple
 
-# 定义本地数据存储目录
-FUND_DATA_DIR = 'fund_data'
-INDEX_DATA_DIR = 'index_data'
-if not os.path.exists(FUND_DATA_DIR):
-    os.makedirs(FUND_DATA_DIR)
-if not os.path.exists(INDEX_DATA_DIR):
-    os.makedirs(INDEX_DATA_DIR)
+# 配置外部化 - 从配置文件加载参数
+CONFIG_FILE = 'market_monitor_config.json'
+
+def load_config():
+    """加载配置文件，如果不存在则创建默认配置"""
+    default_config = {
+        "network": {
+            "max_workers": 5,
+            "retry_attempts": 5,
+            "retry_wait_seconds": 10,
+            "request_timeout": 30,
+            "sleep_min": 1,
+            "sleep_max": 2
+        },
+        "data_validation": {
+            "min_data_points": 26,
+            "max_consecutive_missing_days": 5,
+            "net_value_min": 0.01,
+            "net_value_max": 1000.0,
+            "date_format": "%Y-%m-%d"
+        },
+        "technical_indicators": {
+            "macd_fast": 12,
+            "macd_slow": 26,
+            "macd_signal": 9,
+            "bollinger_window": 20,
+            "bollinger_std": 2,
+            "rsi_window": 14,
+            "ma_window": 50,
+            "rsi_oversold": 30,
+            "rsi_overbought": 70,
+            "ma_ratio_high": 1.2,
+            "ma_ratio_low": 0.8
+        },
+        "trading_signals": {
+            "stop_loss_percent": 0.10,
+            "rsi_buy_threshold": 45,
+            "rsi_sell_threshold": 65,
+            "ma_ratio_buy_threshold": 1.0,
+            "ma_ratio_sell_threshold": 1.2,
+            "rsi_buy_strong": 35,
+            "rsi_sell_weak": 65,
+            "ma_ratio_strong_sell": 1.2,
+            "ma_ratio_strong_buy": 0.9
+        },
+        "backtest": {
+            "min_backtest_data": 100,
+            "risk_free_rate": 0.03,
+            "trading_days_per_year": 252
+        },
+        "portfolio": {
+            "max_positions": 5,
+            "suggested_allocation_base": 100
+        }
+    }
     
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            # 合并默认配置和现有配置（现有配置优先）
+            merged_config = {}
+            for section, default_values in default_config.items():
+                merged_config[section] = default_values.copy()
+                if section in config:
+                    merged_config[section].update(config[section])
+            logger.info("配置文件 %s 加载成功", CONFIG_FILE)
+            return merged_config
+        except Exception as e:
+            logger.warning("加载配置文件失败: %s，使用默认配置", e)
+    else:
+        try:
+            with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+                json.dump(default_config, f, indent=2, ensure_ascii=False)
+            logger.info("已创建默认配置文件 %s", CONFIG_FILE)
+        except Exception as e:
+            logger.warning("创建配置文件失败: %s", e)
+    
+    return default_config
+
 # 配置日志
 logging.basicConfig(
     level=logging.INFO,
@@ -32,11 +104,22 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# 加载配置
+CONFIG = load_config()
+
+# 定义本地数据存储目录
+FUND_DATA_DIR = 'fund_data'
+INDEX_DATA_DIR = 'index_data'
+if not os.path.exists(FUND_DATA_DIR):
+    os.makedirs(FUND_DATA_DIR)
+if not os.path.exists(INDEX_DATA_DIR):
+    os.makedirs(INDEX_DATA_DIR)
+
 class MarketMonitor:
-    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md'):
+    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md', backtest_output_file='backtest_report.md'):
         self.report_file = report_file
         self.output_file = output_file
-        self.backtest_output_file = 'backtest_report.md'
+        self.backtest_output_file = backtest_output_file
         self.portfolio_output_file = 'portfolio_recommendation.md'
         self.fund_codes = []
         self.fund_data = {}
@@ -46,48 +129,42 @@ class MarketMonitor:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
         }
-        
-        # 硬编码配置参数
-        self.max_workers = 5
-        self.retry_attempts = 5
-        self.retry_wait_seconds = 10
-        self.request_timeout = 30
-        self.sleep_min = 1
-        self.sleep_max = 2
-        
-        self.min_data_points = 26
-        self.max_consecutive_missing_days = 5
-        self.net_value_min = 0.01
-        self.net_value_max = 1000.0
-        
-        self.macd_fast = 12
-        self.macd_slow = 26
-        self.macd_signal = 9
-        self.bollinger_window = 20
-        self.bollinger_std = 2
-        self.rsi_window = 14
-        self.ma_window = 50
-        self.rsi_oversold = 30
-        self.rsi_overbought = 70
-        self.ma_ratio_high = 1.2
-        self.ma_ratio_low = 0.8
-        
-        self.stop_loss_percent = 0.10
-        self.rsi_buy_threshold = 45
-        self.rsi_sell_threshold = 65
-        self.ma_ratio_buy_threshold = 1.0
-        self.ma_ratio_sell_threshold = 1.2
-        self.rsi_buy_strong = 35
-        self.rsi_sell_weak = 65
-        self.ma_ratio_strong_sell = 1.2
-        self.ma_ratio_strong_buy = 0.9
-        
-        self.min_backtest_data = 100
-        self.risk_free_rate = 0.03
-        self.trading_days_per_year = 252
-        
-        self.max_positions = 5
-        self.suggested_allocation_base = 100
+        # 从配置中加载参数
+        self.max_workers = CONFIG['network']['max_workers']
+        self.retry_attempts = CONFIG['network']['retry_attempts']
+        self.retry_wait_seconds = CONFIG['network']['retry_wait_seconds']
+        self.request_timeout = CONFIG['network']['request_timeout']
+        self.sleep_min = CONFIG['network']['sleep_min']
+        self.sleep_max = CONFIG['network']['sleep_max']
+        self.min_data_points = CONFIG['data_validation']['min_data_points']
+        self.max_consecutive_missing_days = CONFIG['data_validation']['max_consecutive_missing_days']
+        self.net_value_min = CONFIG['data_validation']['net_value_min']
+        self.net_value_max = CONFIG['data_validation']['net_value_max']
+        self.macd_fast = CONFIG['technical_indicators']['macd_fast']
+        self.macd_slow = CONFIG['technical_indicators']['macd_slow']
+        self.macd_signal = CONFIG['technical_indicators']['macd_signal']
+        self.bollinger_window = CONFIG['technical_indicators']['bollinger_window']
+        self.bollinger_std = CONFIG['technical_indicators']['bollinger_std']
+        self.rsi_window = CONFIG['technical_indicators']['rsi_window']
+        self.ma_window = CONFIG['technical_indicators']['ma_window']
+        self.rsi_oversold = CONFIG['technical_indicators']['rsi_oversold']
+        self.rsi_overbought = CONFIG['technical_indicators']['rsi_overbought']
+        self.ma_ratio_high = CONFIG['technical_indicators']['ma_ratio_high']
+        self.ma_ratio_low = CONFIG['technical_indicators']['ma_ratio_low']
+        self.stop_loss_percent = CONFIG['trading_signals']['stop_loss_percent']
+        self.rsi_buy_threshold = CONFIG['trading_signals']['rsi_buy_threshold']
+        self.rsi_sell_threshold = CONFIG['trading_signals']['rsi_sell_threshold']
+        self.ma_ratio_buy_threshold = CONFIG['trading_signals']['ma_ratio_buy_threshold']
+        self.ma_ratio_sell_threshold = CONFIG['trading_signals']['ma_ratio_sell_threshold']
+        self.rsi_buy_strong = CONFIG['trading_signals']['rsi_buy_strong']
+        self.rsi_sell_weak = CONFIG['trading_signals']['rsi_sell_weak']
+        self.ma_ratio_strong_sell = CONFIG['trading_signals']['ma_ratio_strong_sell']
+        self.ma_ratio_strong_buy = CONFIG['trading_signals']['ma_ratio_strong_buy']
+        self.min_backtest_data = CONFIG['backtest']['min_backtest_data']
+        self.risk_free_rate = CONFIG['backtest']['risk_free_rate']
+        self.trading_days_per_year = CONFIG['backtest']['trading_days_per_year']
+        self.max_positions = CONFIG['portfolio']['max_positions']
+        self.suggested_allocation_base = CONFIG['portfolio']['suggested_allocation_base']
 
     def _get_expected_latest_date(self):
         """根据当前时间确定期望的最新数据日期"""
@@ -165,7 +242,7 @@ class MarketMonitor:
                 logger.warning("基金 %s 存在 %d 次净值负增长", fund_code, len(negative_diffs))
                 
         except Exception as e:
-            return False, f"基金 %s 净值解析失败: %s", fund_code, e
+            return False, f"基金 {fund_code} 净值解析失败: {e}"
         
         # 5. 检查数据完整性
         total_days = (df_sorted['date'].max() - df_sorted['date'].min()).days
@@ -173,7 +250,8 @@ class MarketMonitor:
         if data_coverage < 70:  # 数据覆盖率低于70%时警告
             logger.warning("基金 %s 数据覆盖率较低: %.1f%%", fund_code, data_coverage)
         
-        logger.info("基金 %s 数据验证通过: %d 行数据, 覆盖率 %.1f%%", fund_code, len(df_sorted), data_coverage)
+        logger.info("基金 %s 数据验证通过: %d 行数据, 覆盖率 %.1f%%", 
+                    fund_code, len(df_sorted), data_coverage)
         return True, ""
 
     def _parse_report(self, report_path='analysis_report.md'):
@@ -234,19 +312,6 @@ class MarketMonitor:
                 except:
                     pass
         return pd.DataFrame()
-    
-    def _load_index_data_from_file(self):
-        """从本地文件加载指数数据"""
-        file_path = os.path.join(INDEX_DATA_DIR, f"{self.index_code}.csv")
-        if os.path.exists(file_path):
-            try:
-                self.index_df = pd.read_csv(file_path, parse_dates=['date'])
-                self.index_df = self.index_df.sort_values(by='date', ascending=True).reset_index(drop=True)
-                logger.info("大盘指数 %s 数据加载成功, 共 %d 行, 最新日期为: %s", self.index_code, len(self.index_df), self.index_df['date'].max().date())
-                return True
-            except Exception as e:
-                logger.error("加载大盘指数数据失败: %s", e)
-        return False
 
     def _save_to_local_file(self, fund_code, df):
         """将DataFrame保存到本地文件，覆盖旧文件"""
@@ -267,8 +332,8 @@ class MarketMonitor:
             return False
 
     @tenacity.retry(
-        stop=tenacity.stop_after_attempt(5),
-        wait=tenacity.wait_fixed(10),
+        stop=tenacity.stop_after_attempt(lambda: CONFIG['network']['retry_attempts']),
+        wait=tenacity.wait_fixed(lambda: CONFIG['network']['retry_wait_seconds']),
         retry=tenacity.retry_if_exception_type((requests.exceptions.RequestException, ValueError)),
         before_sleep=lambda retry_state: logger.info(f"重试基金 {retry_state.args[0]}，第 {retry_state.attempt_number} 次")
     )
@@ -286,7 +351,7 @@ class MarketMonitor:
             logger.info("正在获取基金 %s 的第 %d 页数据...", fund_code, page_index)
             
             try:
-                response = requests.get(url, headers=self.headers, timeout=30)
+                response = requests.get(url, headers=self.headers, timeout=self.request_timeout)
                 response.raise_for_status()
                 
                 content_match = re.search(r'content:"(.*?)"', response.text, re.S)
@@ -326,15 +391,15 @@ class MarketMonitor:
                         # 如果当前页没有新数据，且之前已经发现过新数据，则停止爬取
                         if has_new_data:
                             logger.info("基金 %s 已获取所有新数据，爬取结束。", fund_code)
-                            break
+                        break
                         # 如果当前页没有新数据，且是第一页，则说明没有新数据
                         elif page_index == 1:
                             logger.info("基金 %s 无新数据，爬取结束。", fund_code)
                             break
                     else:
                         has_new_data = True
-                        all_new_data.append(new_df_page)
-                        logger.info("第 %d 页: 发现 %d 行新数据", page_index, len(new_df_page))
+                    all_new_data.append(new_df_page)
+                    logger.info("第 %d 页: 发现 %d 行新数据", page_index, len(new_df_page))
                 else:
                     # 如果是首次下载，则获取所有数据
                     all_new_data.append(df_page)
@@ -351,7 +416,7 @@ class MarketMonitor:
                     break
                 
                 page_index += 1
-                time_module.sleep(random.uniform(1, 2))  # 使用配置的sleep时间
+                time_module.sleep(random.uniform(self.sleep_min, self.sleep_max))  # 使用配置的sleep时间
                 
             except requests.exceptions.RequestException as e:
                 logger.error("基金 %s API请求失败: %s", fund_code, str(e))
@@ -372,6 +437,31 @@ class MarketMonitor:
         else:
             return pd.DataFrame()
 
+    def _load_index_data_from_file(self):
+        """
+        从本地文件加载大盘指数数据
+        """
+        file_path = os.path.join(INDEX_DATA_DIR, f"{self.index_code}.csv")
+        logger.info("正在从本地文件 %s 加载大盘指数数据...", file_path)
+        if not os.path.exists(file_path):
+            logger.error("本地大盘指数文件 %s 不存在，请运行 download_index_data.py 下载。", file_path)
+            return pd.DataFrame()
+        
+        try:
+            df = pd.read_csv(file_path, parse_dates=['date'])
+            # 验证指数数据
+            is_valid, error_msg = self._validate_fund_data(df, self.index_code)
+            if not is_valid:
+                logger.error("大盘指数数据验证失败: %s", error_msg)
+                return pd.DataFrame()
+            
+            df = df.sort_values(by='date', ascending=True).reset_index(drop=True)
+            logger.info("大盘指数 %s 数据加载成功，共 %d 行，最新日期为: %s", self.index_code, len(df), df['date'].max().date())
+            return df
+        except Exception as e:
+            logger.error("加载本地大盘指数文件 %s 失败: %s", file_path, e)
+            return pd.DataFrame()
+
     def _calculate_indicators(self, df):
         """计算技术指标并生成结果字典"""
         if df is None or df.empty or len(df) < self.min_data_points:
@@ -380,79 +470,34 @@ class MarketMonitor:
         df = df.sort_values(by='date', ascending=True)
         
         # MACD - 使用配置参数
-        exp_fast = df['net_value'].ewm(span=12, adjust=False).mean()
-        exp_slow = df['net_value'].ewm(span=26, adjust=False).mean()
+        exp_fast = df['net_value'].ewm(span=self.macd_fast, adjust=False).mean()
+        exp_slow = df['net_value'].ewm(span=self.macd_slow, adjust=False).mean()
         df['macd'] = exp_fast - exp_slow
-        df['signal'] = df['macd'].ewm(span=9, adjust=False).mean()
+        df['signal'] = df['macd'].ewm(span=self.macd_signal, adjust=False).mean()
 
         # 布林带 - 使用配置参数
-        df['bb_mid'] = df['net_value'].rolling(window=20, min_periods=1).mean()
-        df['bb_std'] = df['net_value'].rolling(window=20, min_periods=1).std()
-        df['bb_upper'] = df['bb_mid'] + (df['bb_std'] * 2)
-        df['bb_lower'] = df['bb_mid'] - (df['bb_std'] * 2)
+        df['bb_mid'] = df['net_value'].rolling(window=self.bollinger_window, min_periods=1).mean()
+        df['bb_std'] = df['net_value'].rolling(window=self.bollinger_window, min_periods=1).std()
+        df['bb_upper'] = df['bb_mid'] + (df['bb_std'] * self.bollinger_std)
+        df['bb_lower'] = df['bb_mid'] - (df['bb_std'] * self.bollinger_std)
         
         # RSI - 使用配置参数
         delta = df['net_value'].diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
         
-        avg_gain = gain.rolling(window=14, min_periods=1).mean()
-        avg_loss = loss.rolling(window=14, min_periods=1).mean()
+        avg_gain = gain.rolling(window=self.rsi_window, min_periods=1).mean()
+        avg_loss = loss.rolling(window=self.rsi_window, min_periods=1).mean()
         
         rs = avg_gain / avg_loss.replace(0, np.nan)
         df['rsi'] = 100 - (100 / (1 + rs))
 
         # MA - 使用配置参数
-        df['ma50'] = df['net_value'].rolling(window=min(50, len(df)), min_periods=1).mean()
+        df['ma50'] = df['net_value'].rolling(window=min(self.ma_window, len(df)), min_periods=1).mean()
         df['ma_ratio'] = df['net_value'] / df['ma50']
 
         return df
-        
-    def _analyze_index(self, index_df):
-        """分析大盘指数，生成技术指标和市场情绪信号"""
-        if index_df.empty or len(index_df) < self.min_data_points:
-            logger.warning("大盘指数数据不足，无法进行分析。")
-            return None
-        
-        processed_index_df = self._calculate_indicators(index_df)
-        latest_data = processed_index_df.iloc[-1]
-        
-        latest_net_value = latest_data['net_value']
-        latest_rsi = latest_data['rsi']
-        latest_ma_ratio = latest_data['ma_ratio']
-        latest_macd_diff = latest_data['macd'] - latest_data['signal']
-        
-        # 生成大盘信号
-        index_advice = "观察"
-        if (not np.isnan(latest_rsi) and latest_rsi > 70) or \
-           (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
-            index_advice = "等待回调"
-        elif (not np.isnan(latest_rsi) and latest_rsi < 30) or \
-             (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.8):
-            index_advice = "可分批买入"
-            
-        index_action_signal = "持有/观察"
-        if not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.95:
-            index_action_signal = "强卖出/规避"
-        elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
-             (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
-            index_action_signal = "弱卖出/规避"
-        elif (not np.isnan(latest_rsi) and latest_rsi < 35) or \
-             (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.9):
-            index_action_signal = "强买入"
-        elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
-             (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1.0):
-            index_action_signal = "弱买入"
 
-        index_signals = {
-            'latest_net_value': latest_net_value,
-            'rsi': latest_rsi,
-            'ma_ratio': latest_ma_ratio,
-            'advice': index_advice,
-            'action_signal': index_action_signal
-        }
-        return index_signals
-    
     def _get_latest_signals(self, fund_code, df):
         """根据最新数据计算信号"""
         try:
@@ -473,13 +518,13 @@ class MarketMonitor:
             latest_bb_lower = latest_data['bb_lower']
 
             advice = "观察"
-            if (not np.isnan(latest_rsi) and latest_rsi > 70) or \
+            if (not np.isnan(latest_rsi) and latest_rsi > self.rsi_overbought) or \
                (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
-               (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1.2):
+               (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > self.ma_ratio_high):
                 advice = "等待回调"
-            elif (not np.isnan(latest_rsi) and latest_rsi < 30) or \
+            elif (not np.isnan(latest_rsi) and latest_rsi < self.rsi_oversold) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.8):
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < self.ma_ratio_low):
                 advice = "可分批买入"
             elif (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
@@ -491,19 +536,23 @@ class MarketMonitor:
             action_signal = "持有/观察"
             if not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.95:
                 action_signal = "强卖出/规避"
-            elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
+            elif (not np.isnan(latest_rsi) and latest_rsi > self.rsi_overbought) and \
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > self.ma_ratio_strong_sell) and \
+                 (not np.isnan(latest_macd_diff) and latest_macd_diff < 0):
+                action_signal = "强卖出/规避"
+            elif (not np.isnan(latest_rsi) and latest_rsi > self.rsi_sell_weak) or \
                  (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1.2):
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > self.ma_ratio_strong_sell):
                 action_signal = "弱卖出/规避"
-            elif (not np.isnan(latest_rsi) and latest_rsi < 35) and \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.9) and \
+            elif (not np.isnan(latest_rsi) and latest_rsi < self.rsi_buy_strong) and \
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < self.ma_ratio_strong_buy) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
                 action_signal = "强买入"
-            elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
+            elif (not np.isnan(latest_rsi) and latest_rsi < self.rsi_buy_threshold) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1.0):
+                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < self.ma_ratio_buy_threshold):
                 action_signal = "弱买入"
-
+            
             # 计算布林带位置
             bb_position = "中轨"
             if not np.isnan(latest_net_value) and not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper:
@@ -512,179 +561,212 @@ class MarketMonitor:
                 bb_position = "下轨下方"
 
             return {
-                'fund_code': fund_code, 'latest_net_value': latest_net_value, 'rsi': latest_rsi, 'ma_ratio': latest_ma50_ratio,
-                'macd_diff': latest_macd_diff, 'bb_upper': latest_bb_upper, 'bb_lower': latest_bb_lower, 'bb_position': bb_position,
-                'advice': advice, 'action_signal': action_signal
+                'fund_code': fund_code,
+                'latest_net_value': latest_net_value,
+                'rsi': latest_rsi,
+                'ma_ratio': latest_ma50_ratio,
+                'macd_diff': latest_macd_diff,
+                'bb_upper': latest_bb_upper,
+                'bb_lower': latest_bb_lower,
+                'bb_position': bb_position,
+                'advice': advice,
+                'action_signal': action_signal
             }
         except Exception as e:
             logger.error("处理基金 %s 时发生异常: %s", fund_code, str(e))
             return {
                 'fund_code': fund_code, 'latest_net_value': "数据获取失败", 'rsi': np.nan, 'ma_ratio': np.nan,
-                'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 'bb_position': 'N/A', 
+                'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 'bb_position': 'N/A',
                 'advice': "观察", 'action_signal': 'N/A'
             }
 
-    def generate_detailed_report(self):
-        """生成详细的基金技术指标报告"""
-        logger.info("开始生成详细的基金技术指标报告...")
+    def _process_single_fund(self, fund_code):
+        """处理单个基金数据：读取本地，下载增量，合并，保存，并计算信号"""
+        local_df = self._read_local_data(fund_code)
+        latest_local_date = local_df['date'].max().date() if not local_df.empty else None
         
-        all_fund_data = []
-        for fund_code in self.fund_codes:
-            data = self.fund_data.get(fund_code)
-            if data and data['latest_net_value'] != "数据获取失败":
-                all_fund_data.append(data)
+        new_df = self._fetch_fund_data(fund_code, latest_local_date)
         
-        if not all_fund_data:
-            logger.warning("没有可用于生成报告的基金数据。")
-            with open(self.output_file, 'w', encoding='utf-8') as f:
-                f.write(f"# 市场监控报告 ({datetime.now().strftime('%Y-%m-%d')})\n\n")
-                f.write("---")
-                f.write("## 基金数据分析\n\n")
-                f.write("❌ 未找到有效基金数据。\n\n")
-            return
+        if not new_df.empty:
+            df_final = pd.concat([local_df, new_df]).drop_duplicates(subset=['date'], keep='last').sort_values(by='date', ascending=True)
+            if self._save_to_local_file(fund_code, df_final):
+                return self._get_latest_signals(fund_code, df_final.tail(100))
+            else:
+                logger.error("基金 %s 保存失败，跳过", fund_code)
+                return None
+        elif not local_df.empty:
+            # 如果没有新数据，且本地有数据，则使用本地数据计算信号
+            logger.info("基金 %s 无新数据，使用本地历史数据进行分析", fund_code)
+            return self._get_latest_signals(fund_code, local_df.tail(100))
+        else:
+            logger.error("基金 %s 无可用数据，跳过", fund_code)
+            return None
 
-        all_fund_data_df = pd.DataFrame(all_fund_data)
-        
-        # 排序
-        # 创建一个排序键
-        action_signal_order = {
-            '强买入': 0,
-            '弱买入': 1,
-            '持有/观察': 2,
-            '等待回调': 3,
-            '弱卖出/规避': 4,
-            '强卖出/规避': 5,
-            'N/A': 6
-        }
-        all_fund_data_df['action_signal_order'] = all_fund_data_df['action_signal'].map(action_signal_order)
-        all_fund_data_df = all_fund_data_df.sort_values(by='action_signal_order', ascending=True)
-
-        # 格式化数据以用于报告
-        df_for_report = all_fund_data_df[['fund_code', 'latest_net_value', 'rsi', 'ma_ratio', 'macd_diff', 'bb_position', 'advice', 'action_signal']].copy()
-        df_for_report.rename(columns={
-            'fund_code': '基金代码',
-            'latest_net_value': '最新净值',
-            'rsi': 'RSI',
-            'ma_ratio': 'MA50比例',
-            'macd_diff': 'MACD信号',
-            'bb_position': '布林带位置',
-            'advice': '建议',
-            'action_signal': '操作信号'
-        }, inplace=True)
-        
-        df_for_report['RSI'] = df_for_report['RSI'].round(2)
-        df_for_report['MA50比例'] = df_for_report['MA50比例'].round(2)
-        df_for_report['最新净值'] = df_for_report['最新净值'].round(4)
-        
-        # 将MACD信号转换为“金叉”或“死叉”
-        df_for_report['MACD信号'] = df_for_report['MACD信号'].apply(lambda x: '金叉' if x > 0 else '死叉' if x < 0 else 'N/A')
-        
-        markdown_table = df_for_report.to_markdown(index=False)
-        
-        # 获取大盘指数信号
-        index_signals = self._analyze_index(self.index_df)
-
-        with open(self.output_file, 'w', encoding='utf-8') as f:
-            f.write(f"# 市场监控报告 ({datetime.now().strftime('%Y-%m-%d')})\n\n")
-            f.write("---\n")
-            if index_signals:
-                f.write(f"### 大盘指数 {self.index_code} 市场情绪\n\n")
-                f.write(f"📈 **最新净值**: {index_signals['latest_net_value']:.2f}\n")
-                f.write(f"📊 **RSI**: {index_signals['rsi']:.2f}\n")
-                f.write(f"📉 **MA_Ratio**: {index_signals['ma_ratio']:.2f}\n")
-                f.write(f"💡 **当前信号**: {index_signals['action_signal']} | {index_signals['advice']}\n")
-            f.write("---\n")
-            f.write(f"## 推荐基金技术指标\n")
-            f.write(f"此表格已按**行动信号优先级**排序，'强买入'基金将排在最前面。\n\n")
-            f.write(markdown_table)
-            f.write("\n\n")
-
-        logger.info("详细基金技术指标报告已生成并保存到: %s", self.output_file)
-        
+    def _analyze_index(self, index_df):
+        """分析大盘指数，计算技术指标和信号"""
+        logger.info("开始分析大盘指数 %s...", self.index_code)
+        if not index_df.empty:
+            self.index_df = index_df
+            result = self._get_latest_signals(self.index_code, self.index_df.tail(100))
+            self.index_data = result
+            logger.info("大盘指数 %s 分析完成", self.index_code)
+        else:
+            logger.error("大盘指数 %s 未获取到任何有效数据", self.index_code)
+            self.index_data = {
+                'fund_code': self.index_code, 'latest_net_value': "数据获取失败", 'rsi': np.nan, 'ma_ratio': np.nan,
+                'macd_diff': np.nan, 'bb_upper': np.nan, 'bb_lower': np.nan, 'bb_position': 'N/A', 'advice': "观察", 'action_signal': 'N/A'
+            }
+            
     def _get_portfolio_signals(self, fund_data, max_positions=None):
-        """根据买入信号对基金进行评分和排名"""
-        if not fund_data:
-            return pd.DataFrame(), pd.DataFrame()
+        """ 根据综合评分筛选出值得买入的基金 """
+        if max_positions is None:
+            max_positions = self.max_positions
 
-        df = pd.DataFrame(fund_data)
-        
-        # 1. 过滤出具有“买入”信号的基金
-        buy_signals = ['强买入', '弱买入']
-        buy_candidates = df[df['action_signal'].isin(buy_signals)].copy()
-        
-        if buy_candidates.empty:
-            return pd.DataFrame(), pd.DataFrame()
-
-        # 2. 计算综合买入评分
-        buy_candidates['buy_score'] = buy_candidates.apply(self._calculate_buy_score, axis=1)
-        
-        # 3. 按评分和信号排序，选出最佳基金
-        buy_candidates = buy_candidates.sort_values(
-            by=['action_signal', 'buy_score', 'rsi'],
-            ascending=[False, False, True]
-        ).reset_index(drop=True)
-        
-        # 根据配置限制最大持仓数
-        if max_positions:
-            buy_candidates = buy_candidates.head(max_positions)
-
-        # 4. 建议分配
-        if not buy_candidates.empty:
-            num_positions = len(buy_candidates)
-            suggested_allocation = 100 / num_positions
-            buy_candidates['suggested_allocation'] = suggested_allocation
-            buy_candidates['建议分配'] = buy_candidates['suggested_allocation'].apply(lambda x: f'{x:.2f} 元')
-
-        return buy_candidates, df
+        buy_signals = []
+        for code, data in fund_data.items():
+            if data['action_signal'] in ["强买入", "弱买入"] and not np.isnan(data['rsi']):
+                score = self._calculate_buy_score(data)
+                buy_signals.append({
+                    'code': code,
+                    'signal': data['action_signal'],
+                    'score': score,
+                    'rsi': data['rsi'],
+                    'ma_ratio': data['ma_ratio']
+                })
+        # 按照评分降序排列，取前N个
+        buy_signals = sorted(buy_signals, key=lambda x: x['score'], reverse=True)
+        return buy_signals[:max_positions]
     
     def _calculate_buy_score(self, data):
-        """计算买入评分"""
+        """
+        计算基金买入评分
+        RSI越低分数越高，MA_Ratio越低分数越高，布林带位置越低分数越高
+        """
         score = 0
-        if not np.isnan(data['rsi']) and data['rsi'] < 35:
-            score += 50
-        elif not np.isnan(data['rsi']) and data['rsi'] < 45:
+        # 1. RSI评分: 40分 - 使用配置的阈值
+        if data['rsi'] < self.rsi_oversold:
+            score += 40
+        elif data['rsi'] < self.rsi_buy_strong:
             score += 30
-        
-        if not np.isnan(data['ma_ratio']) and data['ma_ratio'] < 0.9:
-            score += 50
-        elif not np.isnan(data['ma_ratio']) and data['ma_ratio'] < 1.0:
-            score += 30
-            
-        if not np.isnan(data['macd_diff']) and data['macd_diff'] > 0:
+        elif data['rsi'] < self.rsi_buy_threshold:
             score += 20
         
+        # 2. MA_Ratio评分: 40分 - 使用配置的阈值
+        if data['ma_ratio'] < self.ma_ratio_strong_buy:
+            score += 40
+        elif data['ma_ratio'] < self.ma_ratio_low:
+            score += 30
+        elif data['ma_ratio'] < self.ma_ratio_buy_threshold:
+            score += 20
+        elif data['ma_ratio'] < 1.05:
+            score += 10
+
+        # 3. 布林带位置评分: 20分
+        bb_position = data['bb_position']
+        if bb_position == "下轨下方":
+            score += 20
+        elif bb_position == "中轨":
+            score += 10
+        else:
+            score += 5
+        
         return score
+    
+    def generate_portfolio_recommendation(self):
+        """生成投资组合推荐"""
+        buy_candidates = self._get_portfolio_signals(self.fund_data, max_positions=3)
+        with open(self.portfolio_output_file, 'w', encoding='utf-8') as f:
+            f.write(f"# 投资组合推荐报告 ({datetime.now().strftime('%Y-%m-%d')})\n\n")
+            f.write("---")
+            f.write(f"### 大盘指数 {self.index_code} 市场情绪\n\n")
+            f.write(f"📈 **最新净值**: {float(self.index_data['latest_net_value']):.2f}\n")
+            f.write(f"📊 **RSI**: {self.index_data['rsi']:.2f}\n")
+            f.write(f"📉 **MA_Ratio**: {self.index_data['ma_ratio']:.2f}\n")
+            f.write(f"💡 **当前信号**: {self.index_data['action_signal']} | {self.index_data['advice']}\n")
+            f.write("---")
+            f.write("\n## 推荐基金列表\n\n")
+            if buy_candidates:
+                f.write("| 序号 | 信号 | 基金代码 | 评分 | RSI | MA_Ratio |\n")
+                f.write("|------|------|----------|------|-----|----------|\n")
+                for i, candidate in enumerate(buy_candidates, 1):
+                    signal_emoji = "🟢 强买入" if candidate['signal'] == "强买入" else "🟡 弱买入"
+                    f.write(f"| {i} | {signal_emoji} | {candidate['code']} | {candidate['score']:.0f} | {candidate['rsi']:.1f} | {candidate['ma_ratio']:.2f} |\n")
+                if buy_candidates:
+                    suggested_amount = buy_candidates[0]['score'] // 10 * self.suggested_allocation_base
+                    f.write(f"\n## 建议分配\n")
+                    f.write(f"💰 建议每支基金分配: {suggested_amount} 元\n\n")
+                f.write(f"📈 今日买入机会: {len(buy_candidates)} / {len(self.fund_codes)}\n\n")
+            else:
+                f.write("## 推荐结果\n")
+                f.write("❌ 今日无符合条件的买入机会，建议观望\n\n")
+                f.write(f"📊 总扫描基金数: {len(self.fund_codes)}\n\n")
+            logger.info("投资组合推荐报告生成完成: %s", self.portfolio_output_file)
+
+    def generate_detailed_report(self):
+        """生成详细报告"""
+        logger.info("正在生成详细报告: %s", self.output_file)
+        with open(self.output_file, 'w', encoding='utf-8') as f:
+            f.write(f"# 市场监控报告 ({datetime.now().strftime('%Y-%m-%d')})\n\n")
+            f.write("---")
+            f.write(f"### 大盘指数 {self.index_code} 市场情绪\n\n")
+            f.write(f"📈 **最新净值**: {float(self.index_data['latest_net_value']):.2f}\n")
+            f.write(f"📊 **RSI**: {self.index_data['rsi']:.2f}\n")
+            f.write(f"📉 **MA_Ratio**: {self.index_data['ma_ratio']:.2f}\n")
+            f.write(f"💡 **当前信号**: {self.index_data['action_signal']} | {self.index_data['advice']}\n")
+            f.write("---\n")
+            f.write("\n## 基金数据分析\n\n")
+            f.write("| 基金代码 | 最新净值 | RSI | MA50比例 | MACD信号 | 布林带位置 | 建议 | 操作信号 |\n")
+            f.write("|----------|----------|-----|----------|----------|------------|------|----------|\n")
+            
+            for fund_code, data in self.fund_data.items():
+                if isinstance(data, dict):
+                    macd_signal = "N/A"
+                    if not np.isnan(data['macd_diff']):
+                        macd_signal = "金叉" if data['macd_diff'] > 0 else "死叉"
+                    
+                    f.write(
+                        f"| {fund_code} | {float(data['latest_net_value']):.2f} | {data['rsi']:.2f} | {data['ma_ratio']:.2f} | {macd_signal} | {data['bb_position']} | {data['advice']} | {data['action_signal']} |\n"
+                    )
+                else:
+                    f.write(f"| {fund_code} | 数据获取失败 | N/A | N/A | N/A | N/A | 观察 | N/A |\n")
+
+        logger.info("详细报告生成完成: %s", self.output_file)
+
+    def _generate_backtest_report(self):
+        # 此功能已移除
+        pass
 
     def run(self):
-        """主执行函数，协调整个流程"""
+        """
+        主执行函数，协调所有操作
+        """
+        logger.info("脚本开始执行，当前时间为: %s", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        
         try:
-            # 1. 解析报告以获取基金列表
+            # 1. 解析报告文件获取基金代码
             self._parse_report()
 
-            if not self.fund_codes:
-                logger.error("无法获取基金列表，脚本终止。")
-                return
-            
             # 2. 加载大盘指数数据
-            self._load_index_data_from_file()
+            index_df = self._load_index_data_from_file()
+            self._analyze_index(index_df)
 
             # 3. 多线程处理每个基金
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                # 使用字典存储 futures 以便映射回基金代码
+            with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
                 future_to_fund = {executor.submit(self._process_single_fund, fund_code): fund_code for fund_code in self.fund_codes}
-                
                 for future in concurrent.futures.as_completed(future_to_fund):
                     fund_code = future_to_fund[future]
                     try:
-                        result = future.result()
-                        if result:
-                            self.fund_data[fund_code] = result
+                        data = future.result()
+                        if data:
+                            self.fund_data[fund_code] = data
                     except Exception as e:
-                        logger.error("处理基金 %s 失败: %s", fund_code, e)
+                        logger.error("处理基金 %s 时发生异常: %s", fund_code, e)
+                        self.fund_data[fund_code] = None
             
             # 4. 生成报告
+            self.generate_portfolio_recommendation()
             self.generate_detailed_report()
-            
+
         except Exception as e:
             logger.exception("脚本执行失败: %s", e)
 
