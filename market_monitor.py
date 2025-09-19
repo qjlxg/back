@@ -28,10 +28,9 @@ if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
 class MarketMonitor:
-    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md', backtest_output_file='backtest_report.md'):
+    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md'):
         self.report_file = report_file
         self.output_file = output_file
-        self.backtest_output_file = backtest_output_file
         self.fund_codes = []
         self.fund_data = {}
         self.index_data = pd.DataFrame()  # 大盘数据
@@ -467,137 +466,6 @@ class MarketMonitor:
             # 如果既没有新数据，本地又没有数据，则返回失败
             logger.error("基金 %s 未获取到任何有效数据，且本地无缓存", fund_code)
             return None
-    
-    def _backtest_strategy(self, fund_code, df):
-        """历史回测策略性能"""
-        if df is None or df.empty or len(df) < 100:
-            logger.warning("基金 %s 数据不足，无法回测", fund_code)
-            return {"cum_return": np.nan, "max_drawdown": np.nan, "sharpe_ratio": np.nan, "win_rate": np.nan, "cagr": np.nan, "total_trades": 0}
-
-        # 计算所有指标
-        df = self._calculate_indicators(df)
-        df = df.dropna()
-        # 关键修复：重置索引以确保后续循环的.iloc正常工作
-        df.reset_index(drop=True, inplace=True)
-
-        # 增加一个检查，确保dropna后仍有足够的数据
-        if df.empty or len(df) < 2:
-            logger.warning("基金 %s 计算指标后数据不足，无法回测", fund_code)
-            return {"cum_return": np.nan, "max_drawdown": np.nan, "sharpe_ratio": np.nan, "win_rate": np.nan, "cagr": np.nan, "total_trades": 0}
-
-        # 模拟交易
-        position = 0
-        buy_price = 0
-        trades = []
-        equity = [1.0] * len(df)
-        
-        for i in range(1, len(df)):
-            latest_data = df.iloc[i]
-            latest_net_value = latest_data['net_value']
-            
-            # 最大回撤计算
-            prev_net_value = df['net_value'].iloc[i-1]
-            if prev_net_value != 0:
-                equity[i] = equity[i-1] * (1 + (latest_net_value - prev_net_value) / prev_net_value)
-            else:
-                equity[i] = equity[i-1]
-
-            # 止损逻辑
-            if position == 1 and (latest_net_value / buy_price) < 0.90:  # 止损10%
-                sell_price = latest_net_value
-                ret = (sell_price - buy_price) / buy_price
-                trades.append({'buy_date': df.iloc[i-1]['date'], 'sell_date': df.iloc[i]['date'], 'return': ret, 'type': 'stop_loss'})
-                position = 0
-                buy_price = 0
-                continue # 继续下一天
-
-            # 交易信号逻辑
-            latest_rsi = latest_data['rsi']
-            latest_ma_ratio = latest_data['ma_ratio']
-            latest_macd_diff = latest_data['macd'] - latest_data['signal']
-            latest_bb_upper = latest_data['bb_upper']
-            latest_bb_lower = latest_data['bb_lower']
-
-            action_signal = "持有/观察"
-            if not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.95:
-                action_signal = "强卖出/规避"
-            elif (not np.isnan(latest_rsi) and latest_rsi > 70) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2) and \
-                 (not np.isnan(latest_macd_diff) and latest_macd_diff < 0):
-                action_signal = "强卖出/规避"
-            elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
-                 (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
-                action_signal = "弱卖出/规避"
-            elif (not np.isnan(latest_rsi) and latest_rsi < 35) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.9) and \
-                 (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
-                action_signal = "强买入"
-            elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
-                 (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1):
-                action_signal = "弱买入"
-            
-            # 模拟交易
-            if action_signal in ["强买入", "弱买入"] and position == 0:
-                position = 1
-                buy_price = latest_net_value
-                # 修复: 使用 .iloc 进行基于位置的索引
-                trades.append({'buy_date': df.iloc[i]['date'], 'buy_price': buy_price})
-            elif action_signal in ["强卖出/规避", "弱卖出/规避"] and position == 1:
-                sell_price = latest_net_value
-                ret = (sell_price - buy_price) / buy_price
-                trades[-1]['sell_date'] = df.iloc[i]['date']
-                trades[-1]['sell_price'] = sell_price
-                trades[-1]['return'] = ret
-                position = 0
-
-        # 如果最后还持有，则以最后一天净值卖出
-        if position == 1:
-            sell_price = df.iloc[-1]['net_value']
-            ret = (sell_price - buy_price) / buy_price
-            trades[-1]['sell_date'] = df.iloc[-1]['date']
-            trades[-1]['sell_price'] = sell_price
-            trades[-1]['return'] = ret
-
-        # 计算回测指标
-        if trades:
-            returns = [trade['return'] for trade in trades if 'return' in trade]
-            cum_return = np.prod([1 + r for r in returns]) - 1 if returns else 0
-            win_rate = len([r for r in returns if r > 0]) / len(returns) if returns else 0
-            total_trades = len(trades)
-        else:
-            cum_return = 0
-            win_rate = 0
-            total_trades = 0
-        
-        # 计算年化收益率
-        start_date = df['date'].iloc[0]
-        end_date = df['date'].iloc[-1]
-        years = (end_date - start_date).days / 365.25
-        cagr = (1 + cum_return) ** (1/years) - 1 if years > 0 else 0
-
-        # 计算最大回撤
-        equity_series = pd.Series(equity)
-        roll_max = equity_series.cummax()
-        drawdown = equity_series / roll_max - 1
-        max_drawdown = drawdown.min()
-
-        # 计算夏普比率
-        daily_returns = pd.Series(equity).pct_change().dropna()
-        sharpe_ratio = np.mean(daily_returns) / np.std(daily_returns) * np.sqrt(252) if len(daily_returns) > 1 and np.std(daily_returns) > 0 else np.nan
-
-        logger.info("基金 %s 回测结果: 累计回报=%.2f, 最大回撤=%.2f, 夏普比率=%.2f, 胜率=%.2f, 年化收益率=%.2f, 交易次数=%d", 
-                    fund_code, cum_return, max_drawdown, sharpe_ratio if not np.isnan(sharpe_ratio) else -1, win_rate, cagr, total_trades)
-        
-        return {
-            "cum_return": cum_return,
-            "max_drawdown": max_drawdown,
-            "sharpe_ratio": sharpe_ratio,
-            "win_rate": win_rate,
-            "cagr": cagr,
-            "total_trades": total_trades
-        }
 
     def generate_report(self):
         """生成市场情绪与技术指标监控报告"""
@@ -703,63 +571,6 @@ class MarketMonitor:
         
         logger.info("报告生成完成: %s", self.output_file)
 
-    def _generate_backtest_report(self, backtest_results):
-        """将回测结果输出为Markdown报告"""
-        logger.info("正在生成回测报告...")
-        if not backtest_results:
-            logger.warning("回测结果为空，无法生成报告。")
-            return
-
-        report_df = pd.DataFrame.from_dict(backtest_results, orient='index')
-        report_df = report_df.rename(columns={
-            "cum_return": "累计回报",
-            "max_drawdown": "最大回撤",
-            "sharpe_ratio": "夏普比率",
-            "win_rate": "胜率",
-            "cagr": "年化收益率",
-            "total_trades": "总交易次数"
-        })
-
-        # 格式化浮点数
-        for col in ["累计回报", "最大回撤", "年化收益率", "胜率"]:
-            report_df[col] = report_df[col].apply(lambda x: f"{x:.2%}" if not pd.isna(x) else "N/A")
-
-        # 格式化夏普比率和总交易次数
-        report_df['夏普比率'] = report_df['夏普比率'].apply(lambda x: f"{x:.2f}" if not pd.isna(x) else "N/A")
-        report_df['总交易次数'] = report_df['总交易次数'].astype(int)
-
-        report_df = report_df.sort_values(by="累计回报", ascending=False)
-        markdown_table = report_df.to_markdown()
-
-        with open(self.backtest_output_file, 'w', encoding='utf-8') as f:
-            f.write(f"# 历史回测结果报告\n\n")
-            f.write(f"生成日期: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-            f.write(f"此报告展示了将您的技术指标策略应用于历史数据的表现。\n\n")
-            f.write("此表格已按**累计回报**从高到低排序。\n")
-            f.write("注意：此回测加入了**10%止损**逻辑，以控制单笔交易亏损。\n\n")
-            f.write(markdown_table)
-        
-        logger.info("回测报告生成完成: %s", self.backtest_output_file)
-
-    def perform_backtest(self):
-        """对所有基金进行历史回测，并输出结果"""
-        backtest_results = {}
-        for fund_code in self.fund_codes:
-            df = self._read_local_data(fund_code)
-            if not df.empty:
-                backtest_results[fund_code] = self._backtest_strategy(fund_code, df)
-            else:
-                logger.warning("基金 %s 无历史数据，无法回测", fund_code)
-                backtest_results[fund_code] = {"cum_return": np.nan, "max_drawdown": np.nan, "sharpe_ratio": np.nan, "win_rate": np.nan, "cagr": np.nan, "total_trades": 0}
-        
-        # 将结果保存到CSV文件
-        backtest_df = pd.DataFrame.from_dict(backtest_results, orient='index')
-        backtest_df.to_csv('backtest_results.csv', encoding='utf-8')
-        logger.info("回测结果已保存到 backtest_results.csv")
-        
-        # 生成回测报告
-        self._generate_backtest_report(backtest_results)
-
 
 if __name__ == "__main__":
     try:
@@ -767,7 +578,6 @@ if __name__ == "__main__":
         monitor = MarketMonitor()
         monitor.get_fund_data()
         monitor.generate_report()
-        monitor.perform_backtest()
         logger.info("脚本执行完成")
     except Exception as e:
         logger.error("脚本运行失败: %s", e, exc_info=True)
