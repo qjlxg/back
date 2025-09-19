@@ -1,11 +1,16 @@
 name: Download and Update Index Data
 
-# 定时任务：每天早上 9:00 (北京时间) 运行
 on:
+  # 定时任务：每天早上 9:00 (北京时间) 运行
   schedule:
     - cron: '0 1 * * *' # UTC 1:00 = 北京时间 9:00
   # 手动触发：也可以在 GitHub Actions 页面手动运行此工作流
   workflow_dispatch:
+  # 在指定文件更改时自动运行
+  push:
+    paths:
+      - 'download_index_data.py'
+      - '.github/workflows/download_data.yml'
 
 jobs:
   download-data:
@@ -24,8 +29,7 @@ jobs:
 
       - name: Install dependencies # 安装所需的库
         run: |
-          pip install pandas akshare
-          pip install yfinance 
+          pip install pandas requests tenacity
 
       - name: Run data downloader script # 运行数据下载器
         run: |
@@ -35,7 +39,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add index_data  # 添加数据目录
+          git add index_data
           if ! git diff-index --quiet HEAD; then
             git commit -m "feat(data): Update index data from automated workflow"
             git push
