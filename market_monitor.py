@@ -251,7 +251,7 @@ class MarketMonitor:
             logger.warning("基金 %s 数据覆盖率较低: %.1f%%", fund_code, data_coverage)
         
         logger.info("基金 %s 数据验证通过: %d 行数据, 覆盖率 %.1f%%", 
-                   fund_code, len(df_sorted), data_coverage)
+                    fund_code, len(df_sorted), data_coverage)
         return True, ""
 
     def _parse_report(self, report_path='analysis_report.md'):
@@ -332,8 +332,8 @@ class MarketMonitor:
             return False
 
     @tenacity.retry(
-        stop=tenacity.stop_after_attempt(lambda: CONFIG['network']['retry_attempts']),
-        wait=tenacity.wait_fixed(lambda: CONFIG['network']['retry_wait_seconds']),
+        stop=tenacity.stop_after_attempt(CONFIG['network']['retry_attempts']),
+        wait=tenacity.wait_fixed(CONFIG['network']['retry_wait_seconds']),
         retry=tenacity.retry_if_exception_type((requests.exceptions.RequestException, ValueError)),
         before_sleep=lambda retry_state: logger.info(f"重试基金 {retry_state.args[0]}，第 {retry_state.attempt_number} 次")
     )
@@ -616,7 +616,7 @@ class MarketMonitor:
         """
         if max_positions is None:
             max_positions = self.max_positions
-            
+        
         buy_signals = []
         for code, data in fund_data.items():
             if data['action_signal'] in ["强买入", "弱买入"] and not np.isnan(data['rsi']):
