@@ -438,7 +438,7 @@ class MarketMonitor:
             f.write(f"# 投资组合推荐报告 ({datetime.now().strftime('%Y-%m-%d')})\n\n")
             f.write("---")
             f.write(f"### 大盘指数 {self.index_code} 市场情绪\n\n")
-            f.write(f"📈 **最新净值**: {self.index_data['latest_net_value']:.2f}\n")
+            f.write(f"📈 **最新净值**: {float(self.index_data['latest_net_value']):.2f}\n")
             f.write(f"📊 **RSI**: {self.index_data['rsi']:.2f}\n")
             f.write(f"📉 **MA_Ratio**: {self.index_data['ma_ratio']:.2f}\n")
             f.write(f"💡 **当前信号**: {self.index_data['action_signal']} | {self.index_data['advice']}\n")
