@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies # 安装所需的库
         run: |
-          pip install pandas requests tenacity
+          pip install pandas requests tenacity lxml
 
       - name: Run data downloader script # 运行数据下载器
         run: |
