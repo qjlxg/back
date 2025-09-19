@@ -10,7 +10,6 @@ import requests
 import tenacity
 import concurrent.futures
 import time as time_module
-from lxml import etree # 新增 lxml 库用于解析 HTML
 
 # 配置日志
 logging.basicConfig(
@@ -35,7 +34,6 @@ class MarketMonitor:
         self.backtest_output_file = backtest_output_file
         self.fund_codes = []
         self.fund_data = {}
-        self.fund_details = {} # 新增，用于存储基金经理和行业数据
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
         }
@@ -199,46 +197,6 @@ class MarketMonitor:
             return new_combined_df[['date', 'net_value']]
         else:
             return pd.DataFrame()
-
-    def _fetch_fund_details(self, fund_code):
-        """新功能: 获取基金经理和持仓行业数据"""
-        details = {'manager': 'N/A', 'industries': 'N/A'}
-        try:
-            # 尝试获取基金经理
-            manager_url = f"http://fundf10.eastmoney.com/jbgk_{fund_code}.html"
-            manager_res = requests.get(manager_url, headers=self.headers, timeout=10)
-            manager_res.raise_for_status()
-            manager_selector = etree.HTML(manager_res.text)
-            manager_name_list = manager_selector.xpath('//div[contains(text(), "基金经理：")]/a/text()')
-            if manager_name_list:
-                details['manager'] = ", ".join(manager_name_list)
-            
-            # 尝试获取持仓行业
-            holdings_url = f"http://fundf10.eastmoney.com/ccmx_{fund_code}.html"
-            holdings_res = requests.get(holdings_url, headers=self.headers, timeout=10)
-            holdings_res.raise_for_status()
-            holdings_selector = etree.HTML(holdings_res.text)
-            
-            industry_tables = holdings_selector.xpath('//div[@id="hytz"]/div/table')
-            if industry_tables:
-                industry_table = industry_tables[0]
-                rows = industry_table.xpath('./tbody/tr')
-                
-                industries = []
-                for row in rows[:5]: # 只取前5个行业
-                    cols = row.xpath('./td/text()')
-                    if len(cols) > 1:
-                        industry_name = cols[0].strip()
-                        percentage = cols[1].strip()
-                        industries.append(f"{industry_name}({percentage})")
-
-                if industries:
-                    details['industries'] = ", ".join(industries)
-
-            logger.info("基金 %s 详细信息获取成功: 经理=%s, 行业=%s", fund_code, details['manager'], details['industries'])
-        except Exception as e:
-            logger.warning("获取基金 %s 详细信息失败: %s", fund_code, str(e))
-        return details
 
     def _calculate_indicators(self, df):
         """计算技术指标并生成结果字典"""
@@ -415,19 +373,6 @@ class MarketMonitor:
         else:
             logger.info("所有基金数据均来自本地缓存，无需网络下载。")
         
-        # 新增: 统一获取基金详细信息
-        if self.fund_codes:
-            logger.info("开始获取基金经理和行业持仓信息...")
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                future_to_code_details = {executor.submit(self._fetch_fund_details, code): code for code in self.fund_codes}
-                for future in concurrent.futures.as_completed(future_to_code_details):
-                    fund_code = future_to_code_details[future]
-                    try:
-                        self.fund_details[fund_code] = future.result()
-                    except Exception as e:
-                        logger.error("获取基金 %s 详细信息时出错: %s", fund_code, str(e))
-                        self.fund_details[fund_code] = {'manager': 'N/A', 'industries': 'N/A'}
-
         if len(self.fund_data) > 0:
             logger.info("所有基金数据处理完成。")
         else:
@@ -507,20 +452,20 @@ class MarketMonitor:
             if not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.95:
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 70) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma50_ratio > 1.2) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff < 0):
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
                  (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1.2):
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
                 action_signal = "弱卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi < 35) and \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.9) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.9) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
                 action_signal = "强买入"
             elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1):
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1):
                 action_signal = "弱买入"
             
             # 模拟交易
@@ -589,38 +534,46 @@ class MarketMonitor:
         logger.info("正在生成市场监控报告...")
         report_df_list = []
         for fund_code in self.fund_codes:
-            data = self.fund_data.get(fund_code, {})
-            details = self.fund_details.get(fund_code, {})
-            
-            latest_net_value_str = f"{data.get('latest_net_value'):.4f}" if isinstance(data.get('latest_net_value'), (float, int)) else str(data.get('latest_net_value', "N/A"))
-            rsi_str = f"{data.get('rsi'):.2f}" if isinstance(data.get('rsi'), (float, int)) and not np.isnan(data.get('rsi')) else "N/A"
-            ma_ratio_str = f"{data.get('ma_ratio'):.2f}" if isinstance(data.get('ma_ratio'), (float, int)) and not np.isnan(data.get('ma_ratio')) else "N/A"
-            
-            macd_signal = "N/A"
-            if isinstance(data.get('macd_diff'), (float, int)) and not np.isnan(data.get('macd_diff')):
-                macd_signal = "金叉" if data['macd_diff'] > 0 else "死叉"
-            
-            bollinger_pos = "中轨"  # 默认中轨
-            if isinstance(data.get('latest_net_value'), (float, int)):
-                if isinstance(data.get('bb_upper'), (float, int)) and not np.isnan(data.get('bb_upper')) and data['latest_net_value'] > data['bb_upper']:
-                    bollinger_pos = "上轨上方"
-                elif isinstance(data.get('bb_lower'), (float, int)) and not np.isnan(data.get('bb_lower')) and data['latest_net_value'] < data['bb_lower']:
-                    bollinger_pos = "下轨下方"
+            data = self.fund_data.get(fund_code)
+            if data is not None:
+                latest_net_value_str = f"{data['latest_net_value']:.4f}" if isinstance(data['latest_net_value'], (float, int)) else str(data['latest_net_value'])
+                rsi_str = f"{data['rsi']:.2f}" if isinstance(data['rsi'], (float, int)) and not np.isnan(data['rsi']) else "N/A"
+                ma_ratio_str = f"{data['ma_ratio']:.2f}" if isinstance(data['ma_ratio'], (float, int)) and not np.isnan(data['ma_ratio']) else "N/A"
+                
+                macd_signal = "N/A"
+                if isinstance(data['macd_diff'], (float, int)) and not np.isnan(data['macd_diff']):
+                    macd_signal = "金叉" if data['macd_diff'] > 0 else "死叉"
+                
+                bollinger_pos = "中轨"  # 默认中轨
+                if isinstance(data['latest_net_value'], (float, int)):
+                    if isinstance(data['bb_upper'], (float, int)) and not np.isnan(data['bb_upper']) and data['latest_net_value'] > data['bb_upper']:
+                        bollinger_pos = "上轨上方"
+                    elif isinstance(data['bb_lower'], (float, int)) and not np.isnan(data['bb_lower']) and data['latest_net_value'] < data['bb_lower']:
+                        bollinger_pos = "下轨下方"
+                else:
+                    bollinger_pos = "N/A"
+                
+                report_df_list.append({
+                    "基金代码": fund_code,
+                    "最新净值": latest_net_value_str,
+                    "RSI": rsi_str,
+                    "净值/MA50": ma_ratio_str,
+                    "MACD信号": macd_signal,
+                    "布林带位置": bollinger_pos,
+                    "投资建议": data['advice'],
+                    "行动信号": data['action_signal']
+                })
             else:
-                bollinger_pos = "N/A"
-            
-            report_df_list.append({
-                "基金代码": fund_code,
-                "基金经理": details.get('manager', 'N/A'), # 新增
-                "核心持仓行业": details.get('industries', 'N/A'), # 新增
-                "最新净值": latest_net_value_str,
-                "RSI": rsi_str,
-                "净值/MA50": ma_ratio_str,
-                "MACD信号": macd_signal,
-                "布林带位置": bollinger_pos,
-                "投资建议": data.get('advice', '观察'),
-                "行动信号": data.get('action_signal', 'N/A')
-            })
+                report_df_list.append({
+                    "基金代码": fund_code,
+                    "最新净值": "数据获取失败",
+                    "RSI": "N/A",
+                    "净值/MA50": "N/A",
+                    "MACD信号": "N/A",
+                    "布林带位置": "N/A",
+                    "投资建议": "观察",
+                    "行动信号": "N/A"
+                })
 
         report_df = pd.DataFrame(report_df_list)
 
