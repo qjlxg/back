@@ -33,6 +33,7 @@ class MarketMonitor:
         self.report_file = report_file
         self.output_file = output_file
         self.backtest_output_file = backtest_output_file
+        self.portfolio_output_file = 'portfolio_recommendation.md'
         self.fund_codes = []
         self.fund_data = {}
         self.index_code = '000300'  # 沪深300指数代码
@@ -76,12 +77,12 @@ class MarketMonitor:
                 extracted_codes.add(code)
             
             sorted_codes = sorted(list(extracted_codes))
-            self.fund_codes = sorted_codes[:10]
+            self.fund_codes = sorted_codes[:1000]
             
             if not self.fund_codes:
                 logger.warning("未提取到任何有效基金代码，请检查 analysis_report.md")
             else:
-                logger.info("提取到 %d 个基金（测试限制前10个）: %s", len(self.fund_codes), self.fund_codes)
+                logger.info("提取到 %d 个基金（测试限制前1000个）: %s", len(self.fund_codes), self.fund_codes)
             
         except Exception as e:
             logger.error("解析报告文件失败: %s", e)
@@ -901,22 +902,29 @@ class MarketMonitor:
         """生成投资组合推荐"""
         buy_candidates = self._get_portfolio_signals(self.fund_data, max_positions=3)
         
-        print("\n" + "="*60)
-        print("📊 今日投资组合推荐 (最多3支)")
-        print("="*60)
-        
-        if buy_candidates:
-            for i, candidate in enumerate(buy_candidates, 1):
-                signal_emoji = "🟢" if candidate['signal'] == "强买入" else "🟡"
-                print(f"{i}. {signal_emoji} {candidate['code']} "
-                      f"(评分: {candidate['score']:.0f}, RSI: {candidate['rsi']:.1f})")
+        with open(self.portfolio_output_file, 'w', encoding='utf-8') as f:
+            f.write(f"# 📊 今日投资组合推荐 (最多3支)\n\n")
+            f.write(f"生成日期: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            
             if buy_candidates:
-                suggested_amount = buy_candidates[0]['score'] // 10 * 100
-                print(f"\n💰 建议分配: 每支{ suggested_amount }元")
-                print(f"📈 今日买入机会: {len(buy_candidates)}/{len(self.fund_codes)}")
-        else:
-            print("❌ 今日无符合条件的买入机会，建议观望")
-            print(f"📊 总扫描基金数: {len(self.fund_codes)}")
+                f.write("## 推荐基金列表\n\n")
+                f.write("| 序号 | 信号 | 基金代码 | 评分 | RSI |\n")
+                f.write("|------|------|----------|------|-----|\n")
+                for i, candidate in enumerate(buy_candidates, 1):
+                    signal_emoji = "🟢 强买入" if candidate['signal'] == "强买入" else "🟡 弱买入"
+                    f.write(f"| {i} | {signal_emoji} | {candidate['code']} | {candidate['score']:.0f} | {candidate['rsi']:.1f} |\n")
+                
+                if buy_candidates:
+                    suggested_amount = buy_candidates[0]['score'] // 10 * 100
+                    f.write(f"\n## 建议分配\n")
+                    f.write(f"💰 建议每支基金分配: {suggested_amount} 元\n\n")
+                    f.write(f"📈 今日买入机会: {len(buy_candidates)} / {len(self.fund_codes)}\n\n")
+            else:
+                f.write("## 推荐结果\n")
+                f.write("❌ 今日无符合条件的买入机会，建议观望\n\n")
+                f.write(f"📊 总扫描基金数: {len(self.fund_codes)}\n\n")
+        
+        logger.info("投资组合推荐报告生成完成: %s", self.portfolio_output_file)
 
 
 if __name__ == "__main__":
