@@ -1,8 +1,8 @@
 import pandas as pd
 import akshare as ak
 import os
-from datetime import datetime
 import logging
+from datetime import datetime
 
 # 配置日志
 logging.basicConfig(
@@ -24,14 +24,26 @@ INDEX_CODE = '000001' # 默认下载上证指数
 OUTPUT_FILE = os.path.join(DATA_DIR, f'{INDEX_CODE}.csv')
 
 def fetch_and_save_index_data():
-    """使用AkShare下载上证指数历史数据并保存为CSV文件"""
+    """使用AkShare下载大盘指数历史数据并保存为CSV文件"""
     logger.info("开始下载大盘指数历史数据 (%s)", INDEX_CODE)
     try:
         # 使用akshare获取指定指数历史数据，日线级别
         index_data_df = ak.stock_zh_index_daily(symbol=INDEX_CODE)
-        
-        # 修正：将列名 '日期' 转换为 'date'，以便与后续处理兼容
-        index_data_df = index_data_df.rename(columns={'日期': 'date'})
+
+        # 修正：将所有中文列名转换为英文
+        index_data_df = index_data_df.rename(columns={
+            '日期': 'date',
+            '开盘': 'open',
+            '收盘': 'close',
+            '最高': 'high',
+            '最低': 'low',
+            '成交量': 'volume',
+            '成交额': 'amount',
+            '振幅': 'amplitude',
+            '涨跌幅': 'change_percent',
+            '涨跌额': 'change_amount',
+            '换手率': 'turnover_rate'
+        })
         
         # 转换日期格式并设置索引
         index_data_df['date'] = pd.to_datetime(index_data_df['date']).dt.date
