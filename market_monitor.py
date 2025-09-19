@@ -28,13 +28,13 @@ if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
 class MarketMonitor:
-    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md', backtest_output_file='backtest_report.md', portfolio_output_file='portfolio_recommendation.md'):
+    def __init__(self, report_file='analysis_report.md', output_file='market_monitor_report.md', backtest_output_file='backtest_report.md'):
         self.report_file = report_file
         self.output_file = output_file
         self.backtest_output_file = backtest_output_file
-        self.portfolio_output_file = portfolio_output_file
         self.fund_codes = []
         self.fund_data = {}
+        self.market_index_data = {}  # 新增：用于存储大盘指数数据
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
         }
@@ -323,6 +323,45 @@ class MarketMonitor:
                 'advice': "观察",
                 'action_signal': 'N/A'
             }
+            
+    def _fetch_index_data(self, index_code='399300'):
+        """从网络获取指数数据，并计算技术指标"""
+        url = f"http://push2his.eastmoney.com/api/qt/stock/kline/get?secid=1.{index_code}&fields1=f1&fields2=f51,f52,f53,f54,f55&klt=101&fqt=0&beg=19900101&end=20500101"
+        logger.info(f"正在获取大盘指数 {index_code} 数据...")
+        try:
+            response = requests.get(url, headers=self.headers, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            
+            if 'data' in data and 'klines' in data['data']:
+                klines = data['data']['klines']
+                df = pd.DataFrame([k.split(',') for k in klines], columns=['date', 'open', 'close', 'high', 'low'])
+                df['date'] = pd.to_datetime(df['date'])
+                df['net_value'] = pd.to_numeric(df['close'])
+                
+                df = self._calculate_indicators(df[['date', 'net_value']])
+                if df is not None and not df.empty:
+                    latest_data = df.iloc[-1]
+                    self.market_index_data = {
+                        'date': latest_data['date'].strftime('%Y-%m-%d'),
+                        'net_value': latest_data['net_value'],
+                        'rsi': latest_data['rsi'],
+                        'ma_ratio': latest_data['ma_ratio'],
+                        'macd_diff': latest_data['macd'] - latest_data['signal'],
+                        'bb_upper': latest_data['bb_upper'],
+                        'bb_lower': latest_data['bb_lower'],
+                        'bb_position': '上轨上方' if latest_data['net_value'] > latest_data['bb_upper'] else '下轨下方' if latest_data['net_value'] < latest_data['bb_lower'] else '中轨'
+                    }
+                    logger.info(f"大盘指数 {index_code} 数据获取成功。")
+                else:
+                    logger.warning(f"大盘指数 {index_code} 数据不足，无法分析。")
+            else:
+                logger.error(f"大盘指数 {index_code} API返回内容格式不正确。")
+
+        except Exception as e:
+            logger.error(f"获取大盘指数 {index_code} 数据失败: {e}")
+            self.market_index_data = {}
+
 
     def get_fund_data(self):
         """主控函数：优先从本地加载，仅在数据非最新或不完整时下载"""
@@ -331,8 +370,11 @@ class MarketMonitor:
         if not self.fund_codes:
             logger.error("没有提取到任何基金代码，无法继续处理")
             return
+            
+        # 步骤2: 获取大盘数据
+        self._fetch_index_data()
 
-        # 步骤2: 预加载本地数据并检查是否需要下载
+        # 步骤3: 预加载本地数据并检查是否需要下载
         logger.info("开始预加载本地缓存数据...")
         fund_codes_to_fetch = []
         expected_latest_date = self._get_expected_latest_date()
@@ -363,7 +405,7 @@ class MarketMonitor:
             
             fund_codes_to_fetch.append(fund_code)
 
-        # 步骤3: 多线程网络下载和处理
+        # 步骤4: 多线程网络下载和处理
         if fund_codes_to_fetch:
             logger.info("开始使用多线程获取 %d 个基金的新数据...", len(fund_codes_to_fetch))
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -463,20 +505,20 @@ class MarketMonitor:
             if not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.95:
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 70) and \
-                 (not np.isnan(latest_ma_ratio) and latest_ma50_ratio > 1.2) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff < 0):
                 action_signal = "强卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi > 65) or \
                  (not np.isnan(latest_bb_upper) and latest_net_value > latest_bb_upper) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio > 1.2):
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio > 1.2):
                 action_signal = "弱卖出/规避"
             elif (not np.isnan(latest_rsi) and latest_rsi < 35) and \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 0.9) and \
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 0.9) and \
                  (not np.isnan(latest_macd_diff) and latest_macd_diff > 0):
                 action_signal = "强买入"
             elif (not np.isnan(latest_rsi) and latest_rsi < 45) or \
                  (not np.isnan(latest_bb_lower) and latest_net_value < latest_bb_lower) or \
-                 (not np.isnan(latest_ma50_ratio) and latest_ma50_ratio < 1):
+                 (not np.isnan(latest_ma_ratio) and latest_ma_ratio < 1):
                 action_signal = "弱买入"
             
             # 模拟交易
@@ -543,6 +585,28 @@ class MarketMonitor:
     def generate_report(self):
         """生成市场情绪与技术指标监控报告"""
         logger.info("正在生成市场监控报告...")
+        
+        # 写入大盘分析部分
+        market_analysis_md = ""
+        if self.market_index_data:
+            data = self.market_index_data
+            rsi_str = f"{data['rsi']:.2f}" if isinstance(data['rsi'], (float, int)) and not np.isnan(data['rsi']) else "N/A"
+            ma_ratio_str = f"{data['ma_ratio']:.2f}" if isinstance(data['ma_ratio'], (float, int)) and not np.isnan(data['ma_ratio']) else "N/A"
+            
+            macd_signal = "N/A"
+            if isinstance(data['macd_diff'], (float, int)) and not np.isnan(data['macd_diff']):
+                macd_signal = "金叉" if data['macd_diff'] > 0 else "死叉"
+
+            market_analysis_md += f"## 大盘情绪与趋势分析 (沪深300)\n\n"
+            market_analysis_md += f"分析日期: {data['date']}\n"
+            market_analysis_md += f"**最新点位:** {data['net_value']:.2f}\n"
+            market_analysis_md += f"**RSI指标:** {rsi_str} ({'市场超买' if data['rsi'] > 70 else '市场超卖' if data['rsi'] < 30 else '中性'})\n"
+            market_analysis_md += f"**净值/MA50比率:** {ma_ratio_str} ({'高于长期均线' if data['ma_ratio'] > 1 else '低于长期均线'})\n"
+            market_analysis_md += f"**MACD信号:** {macd_signal}\n"
+            market_analysis_md += f"**布林带位置:** {data['bb_position']}\n\n"
+            market_analysis_md += "---\n\n"
+
+
         report_df_list = []
         for fund_code in self.fund_codes:
             data = self.fund_data.get(fund_code)
@@ -623,6 +687,7 @@ class MarketMonitor:
         with open(self.output_file, 'w', encoding='utf-8') as f:
             f.write(f"# 市场情绪与技术指标监控报告\n\n")
             f.write(f"生成日期: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            f.write(market_analysis_md)
             f.write(f"## 推荐基金技术指标 (处理基金数: {len(self.fund_codes)})\n")
             f.write("此表格已按**行动信号优先级**排序，'强买入'基金将排在最前面。\n")
             f.write("**注意：** 当'行动信号'和'投资建议'冲突时，请以**行动信号**为准，其条件更严格，更适合机械化决策。\n\n")
@@ -751,32 +816,25 @@ class MarketMonitor:
         return score
 
     def generate_portfolio_recommendation(self):
-        """生成投资组合推荐并输出到Markdown文件"""
-        logger.info("正在生成投资组合推荐报告...")
+        """生成投资组合推荐"""
         buy_candidates = self._get_portfolio_signals(self.fund_data, max_positions=3)
         
-        with open(self.portfolio_output_file, 'w', encoding='utf-8') as f:
-            f.write(f"# 今日投资组合推荐\n\n")
-            f.write(f"生成日期: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-            f.write(f"此报告根据技术指标筛选出最佳买入机会，并按评分排序。建议仅供参考。\n\n")
-            
+        print("\n" + "="*60)
+        print("📊 今日投资组合推荐 (最多3支)")
+        print("="*60)
+        
+        if buy_candidates:
+            for i, candidate in enumerate(buy_candidates, 1):
+                signal_emoji = "🟢" if candidate['signal'] == "强买入" else "🟡"
+                print(f"{i}. {signal_emoji} {candidate['code']} "
+                      f"(评分: {candidate['score']:.0f}, RSI: {candidate['rsi']:.1f})")
             if buy_candidates:
-                f.write(f"## 最佳买入机会 (最多3支)\n\n")
-                f.write("| 基金代码 | 行动信号 | 买入评分 | RSI | 净值/MA50 |\n")
-                f.write("|----------|----------|----------|-----|-------------|\n")
-                for candidate in buy_candidates:
-                    f.write(f"| {candidate['code']} | {candidate['signal']} | {candidate['score']:.0f} | {candidate['rsi']:.1f} | {candidate['ma_ratio']:.2f} |\n")
-                
-                f.write("\n")
                 suggested_amount = buy_candidates[0]['score'] // 10 * 100
-                f.write(f"**💰 建议分配:** 每支{suggested_amount}元\n")
-                f.write(f"**📈 今日买入机会:** {len(buy_candidates)}/{len(self.fund_codes)}\n")
-            else:
-                f.write("## 今日无符合条件的买入机会\n\n")
-                f.write("建议观望，耐心等待更好的入场时机。\n")
-                f.write(f"📊 总扫描基金数: {len(self.fund_codes)}\n")
-                
-        logger.info("投资组合推荐报告生成完成: %s", self.portfolio_output_file)
+                print(f"\n💰 建议分配: 每支{ suggested_amount }元")
+                print(f"📈 今日买入机会: {len(buy_candidates)}/{len(self.fund_codes)}")
+        else:
+            print("❌ 今日无符合条件的买入机会，建议观望")
+            print(f"📊 总扫描基金数: {len(self.fund_codes)}")
 
 
 if __name__ == "__main__":
