@@ -1,6 +1,6 @@
 --- 批量基金分析报告 ---
 
-生成日期: 2025-09-17 15:31:43
+生成日期: 2025-09-19 09:13:08
 
 --- 汇总结果 ---
 
@@ -8,212 +8,214 @@
 
 |   fund_code | fund_name                |   score |
 |------------:|:-------------------------|--------:|
-|      007509 | 华商润丰灵活配置混合C              |      63 |
-|      014728 | 易方达成长动力混合C               |      60 |
-|      015690 | 富国中小盘精选混合C               |      60 |
-|      015692 | 富国通胀通缩主题轮动混合C            |      59 |
-|      015715 | 富国成长动力混合C                |      58 |
-|      002771 | 安信新回报混合C                 |      57 |
-|      014318 | 广发价值领航一年持有混合C            |      57 |
-|      015686 | 富国新兴产业股票C                |      57 |
-|      015144 | 中欧智能制造混合C                |      57 |
-|      020671 | 易方达上证科创板芯片指数发起式C         |      54 |
-|      018836 | 广发成长启航混合C                |      54 |
-|      002170 | 东吴移动互联混合C                |      54 |
-|      019924 | 华泰柏瑞中证2000指数增强C          |      54 |
-|      020477 | 泰康半导体量化选股股票发起式C          |      54 |
-|      020629 | 汇添富上证科创板芯片ETF发起式联接C      |      54 |
-|      019514 | 交银荣鑫灵活配置混合C              |      54 |
-|      021608 | 南方上证科创板芯片ETF发起联接C        |      54 |
-|      519771 | 交银优择回报灵活配置混合C            |      54 |
-|      019830 | 华夏数字产业混合C                |      53 |
-|      019348 | 富国匠心成长混合C                |      53 |
-|      021299 | 中欧北证50成份指数发起C            |      53 |
-|      019458 | 平安先进制造主题股票发起C            |      53 |
-|      019416 | 南方港股医药行业混合发起(QDII)C      |      53 |
-|      020592 | 金信多策略精选混合C               |      53 |
-|      019018 | 易方达信息产业混合C               |      53 |
-|      017836 | 信澳匠心回报混合C                |      53 |
-|      019053 | 华商元亨混合C                  |      53 |
-|      019024 | 易方达信息行业精选股票C             |      53 |
-|      019190 | 华商品质价值混合C                |      53 |
-|      018986 | 信澳双创智选混合C                |      53 |
-|      019331 | 华泰柏瑞中证沪港深云计算产业ETF发起式联接C  |      53 |
-|      019170 | 天弘中证沪港深云计算产业ETF发起联接C     |      53 |
-|      016234 | 财通景气行业混合C                |      53 |
-|      015271 | 财通多策略升级混合(LOF)C          |      53 |
-|      019865 | 浦银安盛高端装备混合C              |      53 |
-|      020829 | 东财北证50C                  |      53 |
-|      005959 | 财通新视野灵活配置混合C             |      53 |
-|      018994 | 中欧数字经济混合发起C              |      53 |
-|      021500 | 景顺长城优质成长股票C              |      52 |
-|      011892 | 易方达先锋成长混合C               |      52 |
-|      019994 | 创金合信北证50成份指数增强C          |      52 |
-|      021490 | 中航趋势领航混合发起C              |      52 |
-|      020662 | 中加科技创新混合发起式C             |      52 |
-|      015642 | 银华数字经济股票发起式C             |      51 |
-|      018227 | 瑞达先进制造混合型发起式C            |      51 |
-|      018125 | 永赢先进制造智选混合发起C            |      51 |
-|      016461 | 华宝核心优势混合C                |      51 |
-|      016244 | 广发成长领航一年持有混合C            |      51 |
-|      012734 | 易方达中证人工智能主题ETF联接C        |      51 |
-|      015044 | 西部利得时代动力混合发起C            |      51 |
+|      007509 | 华商润丰灵活配置混合C              |      58 |
+|      014728 | 易方达成长动力混合C               |      55 |
+|      015690 | 富国中小盘精选混合C               |      55 |
+|      015692 | 富国通胀通缩主题轮动混合C            |      54 |
+|      015715 | 富国成长动力混合C                |      53 |
+|      015686 | 富国新兴产业股票C                |      52 |
+|      014318 | 广发价值领航一年持有混合C            |      52 |
+|      002771 | 安信新回报混合C                 |      52 |
+|      015144 | 中欧智能制造混合C                |      52 |
 |      007818 | 国泰中证全指通信设备ETF联接C         |      51 |
-|      001407 | 景顺长城稳健回报混合C              |      51 |
-|      018241 | 嘉实制造升级股票发起式C             |      50 |
-|      015857 | 格林碳中和主题混合C               |      50 |
-|      015369 | 国泰君安领航成长一年持有混合发起C        |      50 |
-|      014601 | 博时回报严选混合C                |      50 |
-|      015916 | 永赢医药创新智选混合发起C            |      50 |
+|      015642 | 银华数字经济股票发起式C             |      51 |
+|      015044 | 西部利得时代动力混合发起C            |      51 |
+|      012734 | 易方达中证人工智能主题ETF联接C        |      51 |
 |      012322 | 东财云计算增强C                 |      50 |
+|      014601 | 博时回报严选混合C                |      50 |
+|      002170 | 东吴移动互联混合C                |      49 |
 |      008087 | 华夏中证5G通信主题ETF联接C         |      49 |
-|      007356 | 汇添富科技创新混合C               |      49 |
-|      012478 | 富国匠心精选12个月持有混合C          |      49 |
-|      017747 | 建信电子行业股票C                |      49 |
-|      019213 | 华富物联世界灵活配置混合C            |      49 |
-|      015608 | 信澳转型创新股票C                |      49 |
-|      009708 | 工银新兴制造混合C                |      49 |
 |      014262 | 摩根沃享远见一年持有期混合C           |      49 |
-|      010034 | 安信成长精选混合C                |      48 |
-|      020398 | 中银港股通医药混合发起C             |      48 |
-|      018731 | 华夏招鑫鸿瑞混合C                |      48 |
+|      018836 | 广发成长启航混合C                |      49 |
+|      519771 | 交银优择回报灵活配置混合C            |      49 |
+|      021608 | 南方上证科创板芯片ETF发起联接C        |      49 |
+|      020671 | 易方达上证科创板芯片指数发起式C         |      49 |
+|      020477 | 泰康半导体量化选股股票发起式C          |      49 |
+|      020629 | 汇添富上证科创板芯片ETF发起式联接C      |      49 |
+|      015608 | 信澳转型创新股票C                |      49 |
+|      012478 | 富国匠心精选12个月持有混合C          |      49 |
+|      019924 | 华泰柏瑞中证2000指数增强C          |      49 |
+|      019514 | 交银荣鑫灵活配置混合C              |      49 |
+|      018986 | 信澳双创智选混合C                |      48 |
+|      019053 | 华商元亨混合C                  |      48 |
+|      019331 | 华泰柏瑞中证沪港深云计算产业ETF发起式联接C  |      48 |
+|      019458 | 平安先进制造主题股票发起C            |      48 |
+|      019190 | 华商品质价值混合C                |      48 |
+|      019170 | 天弘中证沪港深云计算产业ETF发起联接C     |      48 |
+|      020592 | 金信多策略精选混合C               |      48 |
+|      018994 | 中欧数字经济混合发起C              |      48 |
+|      019018 | 易方达信息产业混合C               |      48 |
+|      017836 | 信澳匠心回报混合C                |      48 |
+|      016234 | 财通景气行业混合C                |      48 |
+|      015271 | 财通多策略升级混合(LOF)C          |      48 |
+|      019348 | 富国匠心成长混合C                |      48 |
+|      019024 | 易方达信息行业精选股票C             |      48 |
 |      008586 | 华夏人工智能ETF联接C             |      48 |
-|      020692 | 博时中证全指通信设备指数发起式C         |      48 |
-|      015881 | 中欧小盘成长混合C                |      48 |
-|      017290 | 中欧科创主题混合(LOF)C           |      48 |
-|      017513 | 广发北证50成份指数C              |      48 |
-|      017484 | 财通资管数字经济混合发起式C           |      48 |
-|      017461 | 长城久鑫混合C                  |      48 |
-|      017470 | 嘉实上证科创板芯片ETF发起联接C        |      48 |
-|      018129 | 博时北证50成份指数发起式C           |      48 |
-|      017968 | 华富科技动能混合C                |      48 |
+|      005959 | 财通新视野灵活配置混合C             |      48 |
+|      019416 | 南方港股医药行业混合发起(QDII)C      |      48 |
+|      019865 | 浦银安盛高端装备混合C              |      48 |
+|      021299 | 中欧北证50成份指数发起C            |      48 |
+|      019830 | 华夏数字产业混合C                |      48 |
+|      020829 | 东财北证50C                  |      48 |
+|      021173 | 华安北证50成份指数发起式C           |      48 |
+|      010034 | 安信成长精选混合C                |      48 |
 |      012083 | 博时数字经济混合C                |      48 |
-|      018113 | 工银北证50成份指数C              |      48 |
-|      017612 | 宏利复兴混合C                  |      48 |
-|      015290 | 格林高股息优选混合C               |      48 |
-|      015751 | 景顺长城品质长青混合C              |      47 |
-|      016068 | 鹏华新能源汽车混合C               |      47 |
-|      015456 | 信澳领先增长混合C                |      47 |
-|      017491 | 财通景气甄选一年持有期混合C           |      47 |
-|      017518 | 招商北证50成份指数发起式C           |      47 |
-|      018288 | 信澳优势产业混合C                |      47 |
-|      018121 | 万家北证50成份指数发起式C           |      47 |
-|      018115 | 鹏扬北证50成份指数C              |      47 |
-|      018957 | 中航机遇领航混合发起C              |      47 |
-|      020900 | 天弘中证全指通信设备指数发起C          |      47 |
-|      021528 | 财通成长优选混合C                |      47 |
-|      014642 | 摩根新兴动力混合C                |      47 |
-|      014939 | 同泰产业升级混合C                |      47 |
-|      011036 | 嘉实中证稀土产业ETF联接C           |      47 |
-|      011145 | 华安汇宏精选混合C                |      47 |
 |      014332 | 华泰柏瑞中证稀土产业ETF发起式联接C      |      47 |
-|      011306 | 富国低碳新经济混合C               |      47 |
-|      014037 | 博时成长回报混合C                |      47 |
 |      014417 | 泰康研究精选股票发起C              |      47 |
-|      021523 | 财通价值动量混合C                |      47 |
-|      005963 | 宝盈人工智能股票C                |      47 |
+|      021500 | 景顺长城优质成长股票C              |      47 |
+|      014642 | 摩根新兴动力混合C                |      47 |
+|      016068 | 鹏华新能源汽车混合C               |      47 |
+|      021490 | 中航趋势领航混合发起C              |      47 |
+|      020662 | 中加科技创新混合发起式C             |      47 |
+|      019994 | 创金合信北证50成份指数增强C          |      47 |
+|      011306 | 富国低碳新经济混合C               |      47 |
+|      015456 | 信澳领先增长混合C                |      47 |
+|      011892 | 易方达先锋成长混合C               |      47 |
+|      014037 | 博时成长回报混合C                |      47 |
+|      011036 | 嘉实中证稀土产业ETF联接C           |      47 |
 |      012697 | 同泰数字经济股票C                |      46 |
-|      011412 | 易方达远见成长混合C               |      46 |
+|      018227 | 瑞达先进制造混合型发起式C            |      46 |
+|      018125 | 永赢先进制造智选混合发起C            |      46 |
+|      016244 | 广发成长领航一年持有混合C            |      46 |
 |      013722 | 信澳景气优选混合C                |      46 |
-|      015389 | 宝盈转型动力混合C                |      46 |
-|      017489 | 嘉实信息产业股票发起式C             |      45 |
-|      016371 | 信澳业绩驱动混合C                |      45 |
-|      017103 | 大摩数字经济混合C                |      45 |
-|      018495 | 融通产业趋势臻选股票C              |      45 |
+|      011412 | 易方达远见成长混合C               |      46 |
+|      001407 | 景顺长城稳健回报混合C              |      46 |
+|      016461 | 华宝核心优势混合C                |      46 |
 |      010052 | 长城久嘉创新成长混合C              |      45 |
+|      015369 | 国泰君安领航成长一年持有混合发起C        |      45 |
+|      015857 | 格林碳中和主题混合C               |      45 |
+|      015916 | 永赢医药创新智选混合发起C            |      45 |
+|      016371 | 信澳业绩驱动混合C                |      45 |
+|      018241 | 嘉实制造升级股票发起式C             |      45 |
 |      011020 | 财通资管消费精选混合C              |      45 |
+|      009708 | 工银新兴制造混合C                |      44 |
+|      009645 | 东方阿尔法优势产业混合C             |      44 |
+|      007356 | 汇添富科技创新混合C               |      44 |
+|      014243 | 富国新材料新能源混合C              |      44 |
 |      011487 | 博时创新精选混合C                |      44 |
 |      002163 | 东方惠新灵活配置混合C              |      44 |
-|      021475 | 华安上证科创板新一代信息技术ETF发起式联接C  |      44 |
-|      021031 | 汇添富国证港股通创新药ETF发起式联接C     |      44 |
-|      018933 | 长盛城镇化主题混合C               |      44 |
-|      020635 | 汇添富恒生生物科技ETF发起式联接(QDII)C |      44 |
-|      015152 | 东吴嘉禾优势精选混合C              |      44 |
-|      016531 | 鹏华碳中和主题混合C               |      44 |
-|      009645 | 东方阿尔法优势产业混合C             |      44 |
-|      014243 | 富国新材料新能源混合C              |      44 |
-|      005312 | 万家经济新动能混合C               |      43 |
-|      008989 | 大成科技创新混合C                |      43 |
-|      017076 | 宝盈半导体产业混合发起式C            |      43 |
+|      017747 | 建信电子行业股票C                |      44 |
+|      019213 | 华富物联世界灵活配置混合C            |      44 |
+|      017612 | 宏利复兴混合C                  |      43 |
+|      020398 | 中银港股通医药混合发起C             |      43 |
+|      017290 | 中欧科创主题混合(LOF)C           |      43 |
+|      017461 | 长城久鑫混合C                  |      43 |
+|      017470 | 嘉实上证科创板芯片ETF发起联接C        |      43 |
+|      015290 | 格林高股息优选混合C               |      43 |
 |      014916 | 财通匠心优选一年持有混合C            |      43 |
-|      021934 | 富国中证通信设备主题ETF发起式联接C      |      43 |
-|      018082 | 光大产业新动力混合C               |      43 |
-|      019703 | 易方达上证科创板成长ETF联接发起式C      |      43 |
-|      016373 | 信澳匠心严选一年持有混合C            |      42 |
-|      019786 | 广发上证科创板成长ETF发起式联接C       |      42 |
-|      020227 | 国泰中证全指集成电路ETF发起联接C       |      42 |
+|      017484 | 财通资管数字经济混合发起式C           |      43 |
+|      017513 | 广发北证50成份指数C              |      43 |
+|      015881 | 中欧小盘成长混合C                |      43 |
+|      018113 | 工银北证50成份指数C              |      43 |
+|      005312 | 万家经济新动能混合C               |      43 |
+|      020692 | 博时中证全指通信设备指数发起式C         |      43 |
+|      017968 | 华富科技动能混合C                |      43 |
+|      018731 | 华夏招鑫鸿瑞混合C                |      43 |
+|      018129 | 博时北证50成份指数发起式C           |      43 |
+|      017518 | 招商北证50成份指数发起式C           |      42 |
+|      021528 | 财通成长优选混合C                |      42 |
 |      018359 | 华富数字经济混合C                |      42 |
-|      016919 | 摩根智慧互联股票C                |      41 |
-|      002580 | 泰信鑫选灵活配置混合C              |      41 |
-|      006503 | 财通集成电路产业股票C              |      41 |
-|      008327 | 东财通信C                    |      41 |
-|      001724 | 申万菱信多策略灵活配置混合C           |      41 |
-|      017522 | 富国北证50成份指数C              |      41 |
-|      017526 | 华夏北证50成份指数C              |      41 |
-|      013370 | 汇添富自主核心科技一年持有混合C         |      41 |
-|      014320 | 德邦半导体产业混合发起式C            |      41 |
-|      014544 | 汇添富中证沪港深云计算产业ETF联接C      |      41 |
-|      017524 | 南方北证50成份指数发起C            |      41 |
-|      018123 | 永赢数字经济智选混合发起C            |      41 |
-|      017516 | 易方达北证50成份指数C             |      41 |
+|      018288 | 信澳优势产业混合C                |      42 |
+|      018121 | 万家北证50成份指数发起式C           |      42 |
+|      018115 | 鹏扬北证50成份指数C              |      42 |
+|      020900 | 天弘中证全指通信设备指数发起C          |      42 |
+|      021523 | 财通价值动量混合C                |      42 |
+|      018957 | 中航机遇领航混合发起C              |      42 |
+|      017491 | 财通景气甄选一年持有期混合C           |      42 |
+|      005963 | 宝盈人工智能股票C                |      42 |
+|      014939 | 同泰产业升级混合C                |      42 |
+|      015751 | 景顺长城品质长青混合C              |      42 |
+|      016373 | 信澳匠心严选一年持有混合C            |      42 |
+|      011145 | 华安汇宏精选混合C                |      42 |
 |      017520 | 汇添富北证50成份指数C             |      41 |
+|      017526 | 华夏北证50成份指数C              |      41 |
+|      016919 | 摩根智慧互联股票C                |      41 |
+|      017524 | 南方北证50成份指数发起C            |      41 |
+|      002580 | 泰信鑫选灵活配置混合C              |      41 |
+|      014544 | 汇添富中证沪港深云计算产业ETF联接C      |      41 |
+|      014320 | 德邦半导体产业混合发起式C            |      41 |
+|      008327 | 东财通信C                    |      41 |
+|      013370 | 汇添富自主核心科技一年持有混合C         |      41 |
+|      001724 | 申万菱信多策略灵活配置混合C           |      41 |
+|      015389 | 宝盈转型动力混合C                |      41 |
+|      018123 | 永赢数字经济智选混合发起C            |      41 |
+|      017522 | 富国北证50成份指数C              |      41 |
 |      017528 | 嘉实北证50成份指数C              |      41 |
-|      009239 | 融通人工智能指数(LOF)C           |      40 |
+|      017516 | 易方达北证50成份指数C             |      41 |
+|      018495 | 融通产业趋势臻选股票C              |      40 |
 |      014130 | 融通中证云计算与大数据主题指数(LOF)C    |      40 |
-|      013239 | 财通均衡优选一年持有混合C            |      40 |
 |      011840 | 天弘中证人工智能C                |      40 |
-|      006523 | 财通新兴蓝筹混合C                |      40 |
 |      014143 | 银河创新成长混合C                |      40 |
-|      016971 | 华夏恒生生物科技ETF发起式联接(QDII)C  |      40 |
+|      006523 | 财通新兴蓝筹混合C                |      40 |
+|      017489 | 嘉实信息产业股票发起式C             |      40 |
 |      017366 | 泰康新锐成长混合C                |      40 |
+|      009239 | 融通人工智能指数(LOF)C           |      40 |
+|      013239 | 财通均衡优选一年持有混合C            |      40 |
 |      016251 | 华夏远见成长一年持有混合C            |      40 |
-|      019671 | 广发中证香港创新药ETF发起式联接(QDII)C |      40 |
-|      018326 | 国泰君安创新成长混合发起C            |      39 |
-|      167507 | 安信深圳科技指数(LOF)C           |      39 |
-|      016463 | 华宝万物互联混合C                |      39 |
-|      017560 | 华安上证科创板芯片ETF发起式联接C       |      39 |
-|      010392 | 易方达战略新兴产业股票C             |      39 |
-|      010531 | 申万中证申万电子行业投资指数(LOF)C     |      39 |
-|      009856 | 中加新兴成长混合C                |      39 |
-|      010238 | 安信创新先锋混合发起C              |      39 |
-|      011370 | 华商均衡成长混合C                |      39 |
-|      011833 | 西部利得人工智能主题指数增强C          |      39 |
+|      017103 | 大摩数字经济混合C                |      40 |
+|      016971 | 华夏恒生生物科技ETF发起式联接(QDII)C  |      40 |
 |      009009 | 平安科技创新混合C                |      39 |
+|      009856 | 中加新兴成长混合C                |      39 |
+|      010531 | 申万中证申万电子行业投资指数(LOF)C     |      39 |
+|      021475 | 华安上证科创板新一代信息技术ETF发起式联接C  |      39 |
+|      018326 | 国泰君安创新成长混合发起C            |      39 |
+|      021225 | 华宝上证科创板芯片指数发起C           |      39 |
+|      167507 | 安信深圳科技指数(LOF)C           |      39 |
+|      018933 | 长盛城镇化主题混合C               |      39 |
+|      016531 | 鹏华碳中和主题混合C               |      39 |
+|      016463 | 华宝万物互联混合C                |      39 |
+|      020635 | 汇添富恒生生物科技ETF发起式联接(QDII)C |      39 |
+|      015152 | 东吴嘉禾优势精选混合C              |      39 |
+|      021031 | 汇添富国证港股通创新药ETF发起式联接C     |      39 |
+|      011370 | 华商均衡成长混合C                |      39 |
+|      010392 | 易方达战略新兴产业股票C             |      39 |
+|      010238 | 安信创新先锋混合发起C              |      39 |
 |      010422 | 海富通消费优选混合C               |      39 |
+|      011833 | 西部利得人工智能主题指数增强C          |      39 |
+|      018082 | 光大产业新动力混合C               |      38 |
+|      019703 | 易方达上证科创板成长ETF联接发起式C      |      38 |
+|      021934 | 富国中证通信设备主题ETF发起式联接C      |      38 |
 |      015576 | 宏利绩优混合C                  |      38 |
+|      017076 | 宝盈半导体产业混合发起式C            |      38 |
 |      011270 | 中银证券优势制造股票C              |      38 |
+|      008989 | 大成科技创新混合C                |      38 |
 |      008021 | 华富中证人工智能产业ETF联接C         |      38 |
 |      007114 | 永赢高端制造混合C                |      38 |
 |      015849 | 富国创新企业灵活配置混合(LOF)C       |      38 |
-|      002112 | 德邦鑫星价值灵活配置混合C            |      37 |
-|      017854 | 易方达云计算ETF联接C             |      37 |
+|      020227 | 国泰中证全指集成电路ETF发起联接C       |      37 |
 |      012651 | 博时半导体主题混合C               |      37 |
+|      002112 | 德邦鑫星价值灵活配置混合C            |      37 |
+|      019786 | 广发上证科创板成长ETF发起式联接C       |      37 |
 |      016076 | 华夏智造升级混合C                |      37 |
 |      015683 | 景顺长城科技创新混合C              |      36 |
-|      013153 | 长信电子信息量化灵活配置混合C          |      36 |
-|      015097 | 东财数字经济C                  |      36 |
 |      014419 | 西部利得CES芯片指数增强C           |      36 |
+|      013153 | 长信电子信息量化灵活配置混合C          |      36 |
+|      006503 | 财通集成电路产业股票C              |      36 |
 |      018216 | 长城久恒灵活配置混合C              |      36 |
 |      015968 | 永赢半导体产业智选混合发起C           |      36 |
+|      015097 | 东财数字经济C                  |      36 |
 |      017511 | 鹏华稳健回报混合C                |      36 |
-|      009063 | 财通智慧成长混合C                |      35 |
 |      010416 | 华泰柏瑞质量精选混合C              |      35 |
+|      009063 | 财通智慧成长混合C                |      35 |
 |      017745 | 嘉实绿色主题股票发起式C             |      35 |
+|      019671 | 广发中证香港创新药ETF发起式联接(QDII)C |      35 |
+|      011452 | 华泰柏瑞质量成长C                |      34 |
+|      012457 | 鹏扬数字经济先锋混合C              |      34 |
 |      012224 | 信澳成长精选混合C                |      34 |
 |      011197 | 摩根优势成长混合C                |      34 |
 |      009492 | 宝盈创新驱动股票C                |      34 |
 |      007771 | 同泰开泰混合C                  |      34 |
 |      008843 | 同泰远见混合C                  |      34 |
 |      011120 | 富国创新科技混合C                |      34 |
-|      011452 | 华泰柏瑞质量成长C                |      34 |
-|      012457 | 鹏扬数字经济先锋混合C              |      34 |
 |      014581 | 东吴阿尔法灵活配置混合C             |      34 |
+|      017560 | 华安上证科创板芯片ETF发起式联接C       |      34 |
+|      012617 | 东吴新经济混合C                 |      33 |
 |      011223 | 信澳星奕混合C                  |      33 |
 |      005551 | 汇安成长优选混合C                |      33 |
 |      006888 | 诺德新生活混合C                 |      33 |
 |      011372 | 华商远见价值C                  |      33 |
-|      012617 | 东吴新经济混合C                 |      33 |
 |      010647 | 融通价值趋势混合C                |      32 |
+|      017854 | 易方达云计算ETF联接C             |      32 |
 |      012800 | 宏利转型机遇股票C                |      31 |
 |      002052 | 诺安稳健回报混合C                |      31 |
 
@@ -229,7 +231,7 @@
 
 ### 基金 001407 - 景顺长城稳健回报混合C
 - 最终决策: **推荐**
-- 综合分数: **51.00**
+- 综合分数: **46.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 8
@@ -237,7 +239,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8317300697758581
   - max_drawdown_value: 0.2682819383259912
@@ -329,7 +331,7 @@
 
 ### 基金 002170 - 东吴移动互联混合C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 7
@@ -337,7 +339,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7145912261310439
   - max_drawdown_value: 0.39573643410852716
@@ -369,7 +371,7 @@
 
 ### 基金 002771 - 安信新回报混合C
 - 最终决策: **推荐**
-- 综合分数: **57.00**
+- 综合分数: **52.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 5
@@ -377,7 +379,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7934776118417697
   - max_drawdown_value: 0.5270900609974883
@@ -449,7 +451,7 @@
 
 ### 基金 005959 - 财通新视野灵活配置混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 7
@@ -457,7 +459,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6859949682783111
   - max_drawdown_value: 0.3494298183865972
@@ -469,7 +471,7 @@
 
 ### 基金 005963 - 宝盈人工智能股票C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 5
@@ -477,7 +479,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7469134618321016
   - max_drawdown_value: 0.5742183184178543
@@ -489,7 +491,7 @@
 
 ### 基金 006503 - 财通集成电路产业股票C
 - 最终决策: **推荐**
-- 综合分数: **41.00**
+- 综合分数: **36.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 5
@@ -497,7 +499,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6566149245537126
   - max_drawdown_value: 0.5384679817397495
@@ -569,7 +571,7 @@
 
 ### 基金 007356 - 汇添富科技创新混合C
 - 最终决策: **推荐**
-- 综合分数: **49.00**
+- 综合分数: **44.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 6
@@ -577,7 +579,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8127874710757695
   - max_drawdown_value: 0.479310618695894
@@ -589,7 +591,7 @@
 
 ### 基金 007509 - 华商润丰灵活配置混合C
 - 最终决策: **推荐**
-- 综合分数: **63.00**
+- 综合分数: **58.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -597,7 +599,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.1499360212664758
   - max_drawdown_value: 0.2731958762886599
@@ -749,7 +751,7 @@
 
 ### 基金 008989 - 大成科技创新混合C
 - 最终决策: **推荐**
-- 综合分数: **43.00**
+- 综合分数: **38.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -757,7 +759,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7437084709831794
   - max_drawdown_value: 0.48600401394317105
@@ -869,7 +871,7 @@
 
 ### 基金 009708 - 工银新兴制造混合C
 - 最终决策: **推荐**
-- 综合分数: **49.00**
+- 综合分数: **44.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 6
@@ -877,7 +879,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8490644942827141
   - max_drawdown_value: 0.40536062954854746
@@ -1149,7 +1151,7 @@
 
 ### 基金 011145 - 华安汇宏精选混合C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -1157,7 +1159,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6065401772124125
   - max_drawdown_value: 0.48767190170070795
@@ -1389,7 +1391,7 @@
 
 ### 基金 011892 - 易方达先锋成长混合C
 - 最终决策: **推荐**
-- 综合分数: **52.00**
+- 综合分数: **47.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -1397,7 +1399,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6647679094546909
   - max_drawdown_value: 0.4096451461622636
@@ -1809,7 +1811,7 @@
 
 ### 基金 014318 - 广发价值领航一年持有混合C
 - 最终决策: **推荐**
-- 综合分数: **57.00**
+- 综合分数: **52.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -1817,7 +1819,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.00760750884709
   - max_drawdown_value: 0.3063224267211997
@@ -1989,7 +1991,7 @@
 
 ### 基金 014728 - 易方达成长动力混合C
 - 最终决策: **推荐**
-- 综合分数: **60.00**
+- 综合分数: **55.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 7
@@ -1997,7 +1999,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8825165308966454
   - max_drawdown_value: 0.3955250176180408
@@ -2029,7 +2031,7 @@
 
 ### 基金 014939 - 同泰产业升级混合C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -2037,7 +2039,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6329774824388982
   - max_drawdown_value: 0.4258675078864353
@@ -2089,7 +2091,7 @@
 
 ### 基金 015144 - 中欧智能制造混合C
 - 最终决策: **推荐**
-- 综合分数: **57.00**
+- 综合分数: **52.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -2097,7 +2099,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.668814467178505
   - max_drawdown_value: 0.4575562432048173
@@ -2109,7 +2111,7 @@
 
 ### 基金 015152 - 东吴嘉禾优势精选混合C
 - 最终决策: **推荐**
-- 综合分数: **44.00**
+- 综合分数: **39.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 7
@@ -2117,7 +2119,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7558325447821638
   - max_drawdown_value: 0.3923891990429532
@@ -2129,7 +2131,7 @@
 
 ### 基金 015271 - 财通多策略升级混合(LOF)C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 7
@@ -2137,7 +2139,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6255555097329936
   - max_drawdown_value: 0.3615441722345954
@@ -2149,7 +2151,7 @@
 
 ### 基金 015290 - 格林高股息优选混合C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -2157,7 +2159,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.055013487948218
   - max_drawdown_value: 0.28846515123050914
@@ -2169,7 +2171,7 @@
 
 ### 基金 015369 - 国泰君安领航成长一年持有混合发起C
 - 最终决策: **推荐**
-- 综合分数: **50.00**
+- 综合分数: **45.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 7
@@ -2177,7 +2179,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8810439322619021
   - max_drawdown_value: 0.3748714592876508
@@ -2189,7 +2191,7 @@
 
 ### 基金 015389 - 宝盈转型动力混合C
 - 最终决策: **推荐**
-- 综合分数: **46.00**
+- 综合分数: **41.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 7
@@ -2197,7 +2199,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.953121532301211
   - max_drawdown_value: 0.30723317364328917
@@ -2309,7 +2311,7 @@
 
 ### 基金 015686 - 富国新兴产业股票C
 - 最终决策: **推荐**
-- 综合分数: **57.00**
+- 综合分数: **52.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 5
@@ -2317,7 +2319,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7630358298227812
   - max_drawdown_value: 0.5196195005945303
@@ -2329,7 +2331,7 @@
 
 ### 基金 015690 - 富国中小盘精选混合C
 - 最终决策: **推荐**
-- 综合分数: **60.00**
+- 综合分数: **55.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 7
@@ -2337,7 +2339,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.883868558309943
   - max_drawdown_value: 0.3869218500797448
@@ -2349,7 +2351,7 @@
 
 ### 基金 015692 - 富国通胀通缩主题轮动混合C
 - 最终决策: **推荐**
-- 综合分数: **59.00**
+- 综合分数: **54.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 6
@@ -2357,7 +2359,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8428759162088064
   - max_drawdown_value: 0.40338827838827845
@@ -2369,7 +2371,7 @@
 
 ### 基金 015715 - 富国成长动力混合C
 - 最终决策: **推荐**
-- 综合分数: **58.00**
+- 综合分数: **53.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 7
@@ -2377,7 +2379,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6469519175806545
   - max_drawdown_value: 0.39980276134122283
@@ -2389,7 +2391,7 @@
 
 ### 基金 015751 - 景顺长城品质长青混合C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -2397,7 +2399,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.0800261415185994
   - max_drawdown_value: 0.30386550777676113
@@ -2429,7 +2431,7 @@
 
 ### 基金 015857 - 格林碳中和主题混合C
 - 最终决策: **推荐**
-- 综合分数: **50.00**
+- 综合分数: **45.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 7
@@ -2437,7 +2439,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8087780126304526
   - max_drawdown_value: 0.3044938271604937
@@ -2449,7 +2451,7 @@
 
 ### 基金 015881 - 中欧小盘成长混合C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 7
@@ -2457,7 +2459,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6586582823916268
   - max_drawdown_value: 0.34560015254075693
@@ -2469,7 +2471,7 @@
 
 ### 基金 015916 - 永赢医药创新智选混合发起C
 - 最终决策: **推荐**
-- 综合分数: **50.00**
+- 综合分数: **45.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 7
@@ -2477,7 +2479,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8449442742711516
   - max_drawdown_value: 0.39896881905229553
@@ -2549,7 +2551,7 @@
 
 ### 基金 016234 - 财通景气行业混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 7
@@ -2557,7 +2559,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6119888799283526
   - max_drawdown_value: 0.33329028925619836
@@ -2569,7 +2571,7 @@
 
 ### 基金 016244 - 广发成长领航一年持有混合C
 - 最终决策: **推荐**
-- 综合分数: **51.00**
+- 综合分数: **46.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 6
@@ -2577,7 +2579,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.042004669228879
   - max_drawdown_value: 0.45175307162121664
@@ -2649,7 +2651,7 @@
 
 ### 基金 016461 - 华宝核心优势混合C
 - 最终决策: **推荐**
-- 综合分数: **51.00**
+- 综合分数: **46.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 7
@@ -2657,7 +2659,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.9743602143505341
   - max_drawdown_value: 0.33485609867519417
@@ -2689,7 +2691,7 @@
 
 ### 基金 016531 - 鹏华碳中和主题混合C
 - 最终决策: **推荐**
-- 综合分数: **44.00**
+- 综合分数: **39.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 6
@@ -2697,7 +2699,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8858250485443501
   - max_drawdown_value: 0.46723772518544693
@@ -2749,7 +2751,7 @@
 
 ### 基金 017076 - 宝盈半导体产业混合发起式C
 - 最终决策: **推荐**
-- 综合分数: **43.00**
+- 综合分数: **38.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -2757,7 +2759,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7277694040220702
   - max_drawdown_value: 0.4023006870107046
@@ -2769,7 +2771,7 @@
 
 ### 基金 017103 - 大摩数字经济混合C
 - 最终决策: **推荐**
-- 综合分数: **45.00**
+- 综合分数: **40.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 6
@@ -2777,7 +2779,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.9877907398845268
   - max_drawdown_value: 0.41653932584269665
@@ -2789,7 +2791,7 @@
 
 ### 基金 017290 - 中欧科创主题混合(LOF)C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -2797,7 +2799,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7283197271072867
   - max_drawdown_value: 0.40252789797312677
@@ -2829,7 +2831,7 @@
 
 ### 基金 017461 - 长城久鑫混合C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 7
@@ -2837,7 +2839,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6452775898275236
   - max_drawdown_value: 0.39260176791847307
@@ -2849,7 +2851,7 @@
 
 ### 基金 017470 - 嘉实上证科创板芯片ETF发起联接C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -2857,7 +2859,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7602073594037699
   - max_drawdown_value: 0.4628935532233883
@@ -2869,7 +2871,7 @@
 
 ### 基金 017484 - 财通资管数字经济混合发起式C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -2877,7 +2879,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7254567646355243
   - max_drawdown_value: 0.49245602414072276
@@ -2889,7 +2891,7 @@
 
 ### 基金 017489 - 嘉实信息产业股票发起式C
 - 最终决策: **推荐**
-- 综合分数: **45.00**
+- 综合分数: **40.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 6
@@ -2897,7 +2899,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.9772467675572711
   - max_drawdown_value: 0.4514553990610329
@@ -2909,7 +2911,7 @@
 
 ### 基金 017491 - 财通景气甄选一年持有期混合C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -2917,7 +2919,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.1142237655231513
   - max_drawdown_value: 0.3860184343762171
@@ -2949,7 +2951,7 @@
 
 ### 基金 017513 - 广发北证50成份指数C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -2957,7 +2959,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7253577194708742
   - max_drawdown_value: 0.42203491872366045
@@ -2989,7 +2991,7 @@
 
 ### 基金 017518 - 招商北证50成份指数发起式C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -2997,7 +2999,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6308253541595746
   - max_drawdown_value: 0.420730671197961
@@ -3109,7 +3111,7 @@
 
 ### 基金 017560 - 华安上证科创板芯片ETF发起式联接C
 - 最终决策: **推荐**
-- 综合分数: **39.00**
+- 综合分数: **34.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 6
@@ -3117,7 +3119,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8754438216703325
   - max_drawdown_value: 0.4551308683007893
@@ -3129,7 +3131,7 @@
 
 ### 基金 017612 - 宏利复兴混合C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 5
@@ -3137,7 +3139,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8072024685144201
   - max_drawdown_value: 0.5130039011703511
@@ -3169,7 +3171,7 @@
 
 ### 基金 017747 - 建信电子行业股票C
 - 最终决策: **推荐**
-- 综合分数: **49.00**
+- 综合分数: **44.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 7
@@ -3177,7 +3179,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7155596870349443
   - max_drawdown_value: 0.389022861001254
@@ -3189,7 +3191,7 @@
 
 ### 基金 017836 - 信澳匠心回报混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3197,7 +3199,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.5542187114575092
   - max_drawdown_value: 0.24778216952129994
@@ -3209,7 +3211,7 @@
 
 ### 基金 017854 - 易方达云计算ETF联接C
 - 最终决策: **推荐**
-- 综合分数: **37.00**
+- 综合分数: **32.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -3217,7 +3219,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6197557458657971
   - max_drawdown_value: 0.48778643273084776
@@ -3229,7 +3231,7 @@
 
 ### 基金 017968 - 华富科技动能混合C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -3237,7 +3239,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.708713927392715
   - max_drawdown_value: 0.4734453018610985
@@ -3249,7 +3251,7 @@
 
 ### 基金 018082 - 光大产业新动力混合C
 - 最终决策: **推荐**
-- 综合分数: **43.00**
+- 综合分数: **38.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -3257,7 +3259,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7208797779197612
   - max_drawdown_value: 0.4210526315789474
@@ -3269,7 +3271,7 @@
 
 ### 基金 018113 - 工银北证50成份指数C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -3277,7 +3279,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7478973854626221
   - max_drawdown_value: 0.4326527382082938
@@ -3289,7 +3291,7 @@
 
 ### 基金 018115 - 鹏扬北证50成份指数C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -3297,7 +3299,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.630625959907877
   - max_drawdown_value: 0.4233139191356462
@@ -3309,7 +3311,7 @@
 
 ### 基金 018121 - 万家北证50成份指数发起式C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 6
   - max_drawdown_score: 6
@@ -3317,7 +3319,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.6828980174990326
   - max_drawdown_value: 0.4401102911361609
@@ -3349,7 +3351,7 @@
 
 ### 基金 018125 - 永赢先进制造智选混合发起C
 - 最终决策: **推荐**
-- 综合分数: **51.00**
+- 综合分数: **46.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 6
@@ -3357,7 +3359,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.110808747054775
   - max_drawdown_value: 0.44616242926596
@@ -3369,7 +3371,7 @@
 
 ### 基金 018129 - 博时北证50成份指数发起式C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 6
@@ -3377,7 +3379,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.7949038843629836
   - max_drawdown_value: 0.43083448753462605
@@ -3409,7 +3411,7 @@
 
 ### 基金 018227 - 瑞达先进制造混合型发起式C
 - 最终决策: **推荐**
-- 综合分数: **51.00**
+- 综合分数: **46.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 8
@@ -3417,7 +3419,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.872044585457038
   - max_drawdown_value: 0.2672949863972016
@@ -3429,7 +3431,7 @@
 
 ### 基金 018241 - 嘉实制造升级股票发起式C
 - 最终决策: **推荐**
-- 综合分数: **50.00**
+- 综合分数: **45.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 7
@@ -3437,7 +3439,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8979523230601797
   - max_drawdown_value: 0.32125748502994006
@@ -3449,7 +3451,7 @@
 
 ### 基金 018288 - 信澳优势产业混合C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -3457,7 +3459,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.174578412052704
   - max_drawdown_value: 0.32579361227065334
@@ -3509,7 +3511,7 @@
 
 ### 基金 018495 - 融通产业趋势臻选股票C
 - 最终决策: **推荐**
-- 综合分数: **45.00**
+- 综合分数: **40.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 6
@@ -3517,7 +3519,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.9634476379606977
   - max_drawdown_value: 0.446734866548727
@@ -3529,7 +3531,7 @@
 
 ### 基金 018731 - 华夏招鑫鸿瑞混合C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3537,7 +3539,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.761472986030693
   - max_drawdown_value: 0.2071416037901386
@@ -3549,7 +3551,7 @@
 
 ### 基金 018836 - 广发成长启航混合C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -3557,7 +3559,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 2.2026593537199655
   - max_drawdown_value: 0.1674797681225966
@@ -3569,7 +3571,7 @@
 
 ### 基金 018933 - 长盛城镇化主题混合C
 - 最终决策: **推荐**
-- 综合分数: **44.00**
+- 综合分数: **39.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 6
@@ -3577,7 +3579,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8042982930229983
   - max_drawdown_value: 0.43525969275786397
@@ -3589,7 +3591,7 @@
 
 ### 基金 018957 - 中航机遇领航混合发起C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -3597,7 +3599,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.3765402389551376
   - max_drawdown_value: 0.3244027534080172
@@ -3609,7 +3611,7 @@
 
 ### 基金 018986 - 信澳双创智选混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3617,7 +3619,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.1866655464167246
   - max_drawdown_value: 0.20130000000000003
@@ -3629,7 +3631,7 @@
 
 ### 基金 018994 - 中欧数字经济混合发起C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3637,7 +3639,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.8055482681833868
   - max_drawdown_value: 0.222329627839536
@@ -3649,7 +3651,7 @@
 
 ### 基金 019018 - 易方达信息产业混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3657,7 +3659,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.4824052339224776
   - max_drawdown_value: 0.23352483947279495
@@ -3669,7 +3671,7 @@
 
 ### 基金 019024 - 易方达信息行业精选股票C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3677,7 +3679,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.4334084918461634
   - max_drawdown_value: 0.22388059701492544
@@ -3689,7 +3691,7 @@
 
 ### 基金 019053 - 华商元亨混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3697,7 +3699,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.1667448191573202
   - max_drawdown_value: 0.28104138851802407
@@ -3709,7 +3711,7 @@
 
 ### 基金 019170 - 天弘中证沪港深云计算产业ETF发起联接C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3717,7 +3719,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.0986733063795004
   - max_drawdown_value: 0.2879591246505351
@@ -3729,7 +3731,7 @@
 
 ### 基金 019190 - 华商品质价值混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3737,7 +3739,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.5192483037134445
   - max_drawdown_value: 0.2305916305916307
@@ -3749,7 +3751,7 @@
 
 ### 基金 019213 - 华富物联世界灵活配置混合C
 - 最终决策: **推荐**
-- 综合分数: **49.00**
+- 综合分数: **44.00**
 - **评分细项**:
   - sharpe_ratio_score: 7
   - max_drawdown_score: 7
@@ -3757,7 +3759,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.753890921969537
   - max_drawdown_value: 0.3519972686923865
@@ -3769,7 +3771,7 @@
 
 ### 基金 019331 - 华泰柏瑞中证沪港深云计算产业ETF发起式联接C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3777,7 +3779,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.0637240961604093
   - max_drawdown_value: 0.2790382005041691
@@ -3789,7 +3791,7 @@
 
 ### 基金 019348 - 富国匠心成长混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3797,7 +3799,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.918871148575898
   - max_drawdown_value: 0.21894723554657913
@@ -3809,7 +3811,7 @@
 
 ### 基金 019416 - 南方港股医药行业混合发起(QDII)C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3817,7 +3819,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.0625095185141982
   - max_drawdown_value: 0.2539
@@ -3829,7 +3831,7 @@
 
 ### 基金 019458 - 平安先进制造主题股票发起C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3837,7 +3839,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.2481577402238482
   - max_drawdown_value: 0.2997350083423299
@@ -3849,7 +3851,7 @@
 
 ### 基金 019514 - 交银荣鑫灵活配置混合C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -3857,7 +3859,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.9027601157976546
   - max_drawdown_value: 0.16049791432165791
@@ -3869,7 +3871,7 @@
 
 ### 基金 019671 - 广发中证香港创新药ETF发起式联接(QDII)C
 - 最终决策: **推荐**
-- 综合分数: **40.00**
+- 综合分数: **35.00**
 - **评分细项**:
   - sharpe_ratio_score: 8
   - max_drawdown_score: 7
@@ -3877,7 +3879,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.8271708220098415
   - max_drawdown_value: 0.36597887254418004
@@ -3889,7 +3891,7 @@
 
 ### 基金 019703 - 易方达上证科创板成长ETF联接发起式C
 - 最终决策: **推荐**
-- 综合分数: **43.00**
+- 综合分数: **38.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3897,7 +3899,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.2890216128146987
   - max_drawdown_value: 0.21198156682027644
@@ -3909,7 +3911,7 @@
 
 ### 基金 019786 - 广发上证科创板成长ETF发起式联接C
 - 最终决策: **推荐**
-- 综合分数: **42.00**
+- 综合分数: **37.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 8
@@ -3917,7 +3919,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.943359684095234
   - max_drawdown_value: 0.289507836677648
@@ -3929,7 +3931,7 @@
 
 ### 基金 019830 - 华夏数字产业混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3937,7 +3939,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.8761374460574425
   - max_drawdown_value: 0.23194032123011354
@@ -3949,7 +3951,7 @@
 
 ### 基金 019865 - 浦银安盛高端装备混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -3957,7 +3959,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 2.123506802819472
   - max_drawdown_value: 0.2344824021913277
@@ -3969,7 +3971,7 @@
 
 ### 基金 019924 - 华泰柏瑞中证2000指数增强C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -3977,7 +3979,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.3656365232147902
   - max_drawdown_value: 0.19240000000000002
@@ -3989,7 +3991,7 @@
 
 ### 基金 019994 - 创金合信北证50成份指数增强C
 - 最终决策: **推荐**
-- 综合分数: **52.00**
+- 综合分数: **47.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 8
@@ -3997,7 +3999,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.9464011181992378
   - max_drawdown_value: 0.29906542056074764
@@ -4009,7 +4011,7 @@
 
 ### 基金 020227 - 国泰中证全指集成电路ETF发起联接C
 - 最终决策: **推荐**
-- 综合分数: **42.00**
+- 综合分数: **37.00**
 - **评分细项**:
   - sharpe_ratio_score: 9
   - max_drawdown_score: 8
@@ -4017,7 +4019,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 0.9515576323555053
   - max_drawdown_value: 0.27598530725702386
@@ -4029,7 +4031,7 @@
 
 ### 基金 020398 - 中银港股通医药混合发起C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -4037,7 +4039,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.2481727551460333
   - max_drawdown_value: 0.24765571019642674
@@ -4049,7 +4051,7 @@
 
 ### 基金 020477 - 泰康半导体量化选股股票发起式C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4057,7 +4059,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.5972168495961654
   - max_drawdown_value: 0.18227200779252412
@@ -4069,7 +4071,7 @@
 
 ### 基金 020592 - 金信多策略精选混合C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -4077,7 +4079,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.1743441074486554
   - max_drawdown_value: 0.27778248707298464
@@ -4089,7 +4091,7 @@
 
 ### 基金 020629 - 汇添富上证科创板芯片ETF发起式联接C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4097,7 +4099,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.5028630887880179
   - max_drawdown_value: 0.18336386535378968
@@ -4109,7 +4111,7 @@
 
 ### 基金 020635 - 汇添富恒生生物科技ETF发起式联接(QDII)C
 - 最终决策: **推荐**
-- 综合分数: **44.00**
+- 综合分数: **39.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4117,7 +4119,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.4464255518534184
   - max_drawdown_value: 0.18588431506330064
@@ -4129,7 +4131,7 @@
 
 ### 基金 020662 - 中加科技创新混合发起式C
 - 最终决策: **推荐**
-- 综合分数: **52.00**
+- 综合分数: **47.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -4137,7 +4139,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.1836566587276358
   - max_drawdown_value: 0.31194118815815614
@@ -4149,7 +4151,7 @@
 
 ### 基金 020671 - 易方达上证科创板芯片指数发起式C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4157,7 +4159,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.4755555264219309
   - max_drawdown_value: 0.1826136363636363
@@ -4169,7 +4171,7 @@
 
 ### 基金 020692 - 博时中证全指通信设备指数发起式C
 - 最终决策: **推荐**
-- 综合分数: **48.00**
+- 综合分数: **43.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -4177,7 +4179,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.5881861695986963
   - max_drawdown_value: 0.2966973048761489
@@ -4189,7 +4191,7 @@
 
 ### 基金 020829 - 东财北证50C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -4197,7 +4199,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.416050951671624
   - max_drawdown_value: 0.2803748501689005
@@ -4209,7 +4211,7 @@
 
 ### 基金 020900 - 天弘中证全指通信设备指数发起C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -4217,7 +4219,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.5799372910493852
   - max_drawdown_value: 0.30209040827107386
@@ -4229,7 +4231,7 @@
 
 ### 基金 021031 - 汇添富国证港股通创新药ETF发起式联接C
 - 最终决策: **推荐**
-- 综合分数: **44.00**
+- 综合分数: **39.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4237,7 +4239,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.7030518029834492
   - max_drawdown_value: 0.19323637881845387
@@ -4254,20 +4256,8 @@
 ---
 
 ### 基金 021173 - 华安北证50成份指数发起式C
-- 最终决策: **Skip**
-- 综合分数: **nan**
-
----
-
-### 基金 021225 - 华宝上证科创板芯片指数发起C
-- 最终决策: **Skip**
-- 综合分数: **nan**
-
----
-
-### 基金 021299 - 中欧北证50成份指数发起C
 - 最终决策: **推荐**
-- 综合分数: **53.00**
+- 综合分数: **48.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -4275,7 +4265,47 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
+- **数据值**:
+  - sharpe_ratio_value: 1.8008634808480066
+  - max_drawdown_value: 0.2707210413912336
+  - manager_years_value: 1.0602739726027397
+  - manager_return_value: 117.47
+  - holding_concentration_value: 41.28999999999999
+
+---
+
+### 基金 021225 - 华宝上证科创板芯片指数发起C
+- 最终决策: **推荐**
+- 综合分数: **39.00**
+- **评分细项**:
+  - sharpe_ratio_score: 10
+  - max_drawdown_score: 9
+  - manager_years_score: 0
+  - manager_return_score: 0
+  - holding_concentration_score: 10
+  - fund_type_score: 10
+  - market_sentiment_adj_score: 0
+- **数据值**:
+  - sharpe_ratio_value: 2.2304696344310453
+  - max_drawdown_value: 0.1792437297623621
+  - manager_years_value: nan
+  - manager_return_value: nan
+  - holding_concentration_value: 50.37
+
+---
+
+### 基金 021299 - 中欧北证50成份指数发起C
+- 最终决策: **推荐**
+- 综合分数: **48.00**
+- **评分细项**:
+  - sharpe_ratio_score: 10
+  - max_drawdown_score: 8
+  - manager_years_score: 0
+  - manager_return_score: 10
+  - holding_concentration_score: 10
+  - fund_type_score: 10
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.378986504848889
   - max_drawdown_value: 0.27552006510350435
@@ -4287,7 +4317,7 @@
 
 ### 基金 021475 - 华安上证科创板新一代信息技术ETF发起式联接C
 - 最终决策: **推荐**
-- 综合分数: **44.00**
+- 综合分数: **39.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4295,7 +4325,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.591915400815909
   - max_drawdown_value: 0.18388929175731206
@@ -4307,7 +4337,7 @@
 
 ### 基金 021490 - 中航趋势领航混合发起C
 - 最终决策: **推荐**
-- 综合分数: **52.00**
+- 综合分数: **47.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -4315,7 +4345,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.9716559567654648
   - max_drawdown_value: 0.3007161963931314
@@ -4327,7 +4357,7 @@
 
 ### 基金 021500 - 景顺长城优质成长股票C
 - 最终决策: **推荐**
-- 综合分数: **52.00**
+- 综合分数: **47.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -4335,7 +4365,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.6417275173108106
   - max_drawdown_value: 0.3076511503477795
@@ -4347,7 +4377,7 @@
 
 ### 基金 021523 - 财通价值动量混合C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -4355,7 +4385,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.295423009612716
   - max_drawdown_value: 0.37846153846153846
@@ -4367,7 +4397,7 @@
 
 ### 基金 021528 - 财通成长优选混合C
 - 最终决策: **推荐**
-- 综合分数: **47.00**
+- 综合分数: **42.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 7
@@ -4375,7 +4405,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 5
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.3824931050996632
   - max_drawdown_value: 0.3905454545454546
@@ -4387,7 +4417,7 @@
 
 ### 基金 021608 - 南方上证科创板芯片ETF发起联接C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4395,7 +4425,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.8455884447566955
   - max_drawdown_value: 0.18427256398742706
@@ -4407,7 +4437,7 @@
 
 ### 基金 021934 - 富国中证通信设备主题ETF发起式联接C
 - 最终决策: **推荐**
-- 综合分数: **43.00**
+- 综合分数: **38.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 8
@@ -4415,7 +4445,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 0
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 2.0297804631145366
   - max_drawdown_value: 0.2542157623650604
@@ -4447,7 +4477,7 @@
 
 ### 基金 519771 - 交银优择回报灵活配置混合C
 - 最终决策: **推荐**
-- 综合分数: **54.00**
+- 综合分数: **49.00**
 - **评分细项**:
   - sharpe_ratio_score: 10
   - max_drawdown_score: 9
@@ -4455,7 +4485,7 @@
   - manager_return_score: 10
   - holding_concentration_score: 10
   - fund_type_score: 10
-  - market_sentiment_adj_score: 5
+  - market_sentiment_adj_score: 0
 - **数据值**:
   - sharpe_ratio_value: 1.020783656923629
   - max_drawdown_value: 0.16526712912255084

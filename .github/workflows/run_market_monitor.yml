@@ -81,6 +81,7 @@ jobs:
           git add backtest_report.md
           git add backtest_results.csv
           git add market_monitor.log
+          git add portfolio_recommendation.md
           git add fund_data
           # 如果有文件更改，则提交
           if git diff --staged --quiet; then
